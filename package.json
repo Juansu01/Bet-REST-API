@@ -5,15 +5,19 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' src/app.ts"
+    "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' src/app.ts",
+    "serve": "concurrently \"npx tsc -w\" \"nodemon dist/app.js\""
   },
   "author": "Juansu01",
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^21.3.2",
-    "dotenv": "^16.0.3"
+    "concurrently": "^8.0.1",
+    "dotenv": "^16.0.3",
+    "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@types/hapi": "^18.0.8",
     "@types/node": "^20.1.5"
   }
 }
