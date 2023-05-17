@@ -1,15 +1,15 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
+
+import { BaseClass } from "./BaseClass";
+import { Transaction } from "./Transaction";
 
 enum UserRole {
   ADMIN = "admin",
   USER = "user",
 }
 
-@Entity()
-export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+@Entity("user")
+export class User extends BaseClass {
   @Column({
     type: "enum",
     enum: UserRole,
@@ -53,4 +53,7 @@ export class User extends BaseEntity {
 
   @Column()
   document_id: string;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[];
 }
