@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, Unique } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Transaction } from "./Transaction";
@@ -26,7 +26,11 @@ export class User extends BaseClass {
   phone: string;
 
   @Column()
+  @Unique(["email"])
   email: string;
+
+  @Column()
+  password: string;
 
   @Column()
   username: string;

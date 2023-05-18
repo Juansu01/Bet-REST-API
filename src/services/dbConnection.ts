@@ -18,7 +18,7 @@ const myDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DATABASE,
   entities: [User, Event, Transaction, Bet, Option, Match, Team, PlacedBet],
-  logging: true,
+  logging: false,
   synchronize: true,
 });
 
