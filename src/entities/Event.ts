@@ -1,16 +1,13 @@
 import { Entity, Column, OneToMany } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
-import { Bet } from "./Bet";
+import { Match } from "./Match";
 
 @Entity("event")
 export class Event extends BaseClass {
   @Column()
   sport: string;
 
-  @Column()
-  match: number;
-
-  @OneToMany(() => Bet, (bet) => bet.event)
-  bets: Bet[];
+  @OneToMany(() => Match, (match) => match.event)
+  matches: Match[];
 }

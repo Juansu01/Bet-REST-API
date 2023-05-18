@@ -1,4 +1,4 @@
-import { ManyToOne, Column, Entity } from "typeorm";
+import { ManyToOne, Column, Entity, JoinColumn } from "typeorm";
 
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
@@ -28,6 +28,9 @@ export class Transaction extends BaseClass {
 
   @ManyToOne(() => User, (user) => user.transactions, {
     onDelete: "CASCADE",
+  })
+  @JoinColumn({
+    name: "user_id",
   })
   user: User;
 }
