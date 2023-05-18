@@ -1,7 +1,8 @@
-import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Event } from "./Event";
+import { Team } from "./Team";
 
 @Entity("match")
 export class Match extends BaseClass {
@@ -18,4 +19,7 @@ export class Match extends BaseClass {
     name: "event_id",
   })
   event: Event;
+
+  @OneToMany(() => Team, (team) => team.match)
+  teams: Team[];
 }
