@@ -1,6 +1,7 @@
-import { BaseClass } from "./BaseClass";
+import { Entity, Column, OneToMany } from "typeorm";
 
-import { Entity, Column } from "typeorm";
+import { BaseClass } from "./BaseClass";
+import { Bet } from "./Bet";
 
 @Entity("event")
 export class Event extends BaseClass {
@@ -9,4 +10,7 @@ export class Event extends BaseClass {
 
   @Column()
   match: number;
+
+  @OneToMany(() => Bet, (bet) => bet.event)
+  bets: Bet[];
 }
