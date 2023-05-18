@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Event } from "./Event";
+import { Option } from "./Option";
 
 enum BetStatus {
   ACTIVE = "active",
@@ -22,4 +23,9 @@ export class Bet extends BaseClass {
 
   @ManyToOne(() => Event, (event) => event.bets)
   event: Event;
+
+  @ManyToMany((type) => Option, {
+    cascade: true,
+  })
+  options: Option[];
 }
