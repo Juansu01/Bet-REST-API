@@ -8,6 +8,7 @@ import { Bet } from "../entities/Bet";
 import { Option } from "../entities/Option";
 import { Match } from "../entities/Match";
 import { Team } from "../entities/Team";
+import { PlacedBet } from "../entities/PlacedBet";
 
 dotenv.config();
 const myDataSource = new DataSource({
@@ -16,7 +17,7 @@ const myDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DATABASE,
-  entities: [User, Event, Transaction, Bet, Option, Match, Team],
+  entities: [User, Event, Transaction, Bet, Option, Match, Team, PlacedBet],
   logging: true,
   synchronize: true,
 });
