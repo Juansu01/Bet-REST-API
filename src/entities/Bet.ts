@@ -20,7 +20,9 @@ export enum BetStatus {
 
 @Entity("bet")
 export class Bet extends BaseClass {
-  @Column()
+  @Column({
+    nullable: true,
+  })
   result: string;
 
   @Column({

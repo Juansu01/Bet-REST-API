@@ -10,8 +10,16 @@ export class Match extends BaseClass {
   @Column()
   date: Date;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   winner: string;
+
+  @Column({
+    default: null,
+    nullable: true,
+  })
+  event_id: number;
 
   @ManyToOne(() => Event, (event) => event.matches, {
     onDelete: "CASCADE",

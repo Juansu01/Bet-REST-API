@@ -6,6 +6,7 @@ interface BetPayload {
   match_id: number;
   status: BetStatus;
   access_token: string;
+  result: string;
 }
 
 export interface BetRequest extends Request {
