@@ -11,10 +11,14 @@ export class Option extends BaseClass {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    type: "numeric",
+  })
   odd: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   did_win: Boolean;
 
   @ManyToMany((type) => Bet, {

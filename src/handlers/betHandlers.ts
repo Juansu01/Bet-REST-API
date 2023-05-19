@@ -16,7 +16,9 @@ export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
 export const getAllBets = async (request: BetRequest, h: ResponseToolkit) => {
   try {
     const bets = await myDataSource.getRepository(Bet).find({
-      relations: ["match"],
+      relations: {
+        options: true,
+      },
     });
 
     return h.response(bets).header("Content-Type", "application/json");

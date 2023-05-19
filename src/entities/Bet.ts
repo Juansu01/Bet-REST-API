@@ -4,7 +4,7 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
-  OneToMany,
+  JoinTable,
 } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
@@ -44,6 +44,17 @@ export class Bet extends BaseClass {
 
   @ManyToMany((type) => Option, {
     cascade: true,
+  })
+  @JoinTable({
+    name: "bets_options",
+    joinColumn: {
+      name: "bet",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "option",
+      referencedColumnName: "id",
+    },
   })
   options: Option[];
 }
