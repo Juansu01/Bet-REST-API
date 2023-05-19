@@ -11,8 +11,13 @@ export const checkAccessToken: ServerMethod = async (
   const secret: Secret = process.env.ACCESS_TOKEN_SECRET as Secret;
   const accessToken = request.query.access_token as string;
 
+  if (!accessToken) throw Boom.notFound("Please provide an access token.");
+
   verify(accessToken, secret, { complete: true }, (err, decoded) => {
-    if (err) throw Boom.unauthorized(err.message);
+    if (err?.message === "jwt expired")
+      throw Boom.unauthorized("Access token expired.");
+    if (err?.message === "invalid signature")
+      throw Boom.unauthorized(err.message);
   });
 
   return h.continue;
