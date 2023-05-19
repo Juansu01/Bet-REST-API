@@ -17,7 +17,7 @@ export const checkAccessToken: ServerMethod = async (
     if (err?.message === "jwt expired")
       throw Boom.unauthorized("Access token expired.");
     if (err?.message === "invalid signature")
-      throw Boom.unauthorized(err.message);
+      throw Boom.unauthorized("Invalid access token.");
   });
 
   return h.continue;
