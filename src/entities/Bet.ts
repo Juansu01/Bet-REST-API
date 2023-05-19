@@ -1,9 +1,18 @@
-import { Column, Entity, ManyToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Option } from "./Option";
+import { Event } from "./Event";
+import { Match } from "./Match";
 
-enum BetStatus {
+export enum BetStatus {
   ACTIVE = "active",
   CANCELLED = "cancelled",
   SETTLED = "settled",
@@ -19,6 +28,17 @@ export class Bet extends BaseClass {
     enum: BetStatus,
   })
   status: string;
+
+  @Column()
+  match_id: number;
+
+  @ManyToOne(() => Match, (match) => match.bets, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({
+    name: "match_id",
+  })
+  matches: Match[];
 
   @ManyToMany((type) => Option, {
     cascade: true,
