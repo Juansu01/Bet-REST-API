@@ -3,6 +3,7 @@ import { Request } from "hapi";
 interface AuthenticationPayload {
   email: string;
   password: string;
+  access_token: string;
 }
 
 interface RegistrationPayload {
