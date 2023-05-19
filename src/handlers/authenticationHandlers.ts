@@ -6,6 +6,7 @@ import {
   AuthenticationRequest,
 } from "src/types/authentication";
 import myDataSource from "../services/dbConnection";
+import { generateAccessToken } from "../services/accessTokenGenerators";
 
 export const registerHandler = async (
   request: RegisterRequest,
@@ -69,8 +70,15 @@ export const loginHandler = async (
   });
 
   if (user) {
-    return h.response(user);
+    if (password === user.password) {
+      const accessToken: string = generateAccessToken(email);
+      return h.response({
+        message: "Logged in successfully!",
+        access_token: accessToken,
+      });
+    }
+    return h.response("Wrong password.").code(401);
   }
 
-  return h.response("That is not a user :c");
+  return h.response("User not found.").code(404);
 };
