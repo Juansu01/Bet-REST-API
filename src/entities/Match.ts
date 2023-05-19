@@ -21,7 +21,7 @@ export class Match extends BaseClass {
   })
   event: Event;
 
-  @OneToMany(() => Bet, (bet) => bet.matches)
+  @OneToMany(() => Bet, (bet) => bet.match)
   bets: Bet[];
 
   @OneToMany(() => Team, (team) => team.match)

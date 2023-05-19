@@ -38,7 +38,7 @@ export class Bet extends BaseClass {
   @JoinColumn({
     name: "match_id",
   })
-  matches: Match[];
+  match: Match;
 
   @ManyToMany((type) => Option, {
     cascade: true,
