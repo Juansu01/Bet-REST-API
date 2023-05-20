@@ -8,6 +8,11 @@ enum UserRole {
   USER = "user",
 }
 
+enum UserState {
+  ACTIVE = "active",
+  BLOCKED = "blocked",
+}
+
 @Entity("user")
 export class User extends BaseClass {
   @Column({
@@ -16,6 +21,11 @@ export class User extends BaseClass {
   })
   role: string;
 
+  @Column({
+    type: "enum",
+    enum: UserState,
+    default: "active",
+  })
   @Column()
   first_name: string;
 
