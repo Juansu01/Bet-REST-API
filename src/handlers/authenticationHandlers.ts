@@ -65,9 +65,13 @@ export const loginHandler = async (
 ) => {
   const { email, password } = request.payload;
 
-  const user = await myDataSource.getRepository(User).findOneBy({
-    email: email,
+  const results = await myDataSource.getRepository(User).find({
+    where: {
+      email: email,
+    },
+    select: { password: true },
   });
+  const user = results[0];
 
   if (user) {
     if (password === user.password) {
