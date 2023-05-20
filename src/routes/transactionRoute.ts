@@ -5,6 +5,7 @@ import {
   createNewTransaction,
   getAllTransactions,
   depositIntoAccount,
+  getUserBalance,
 } from "../handlers/transactionHandlers";
 
 export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -28,6 +29,14 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "POST",
     path: "/api/transactions",
     handler: depositIntoAccount,
+    options: {
+      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/user/balance",
+    handler: getUserBalance,
     options: {
       pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
     },

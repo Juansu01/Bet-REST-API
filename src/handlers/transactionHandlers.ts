@@ -55,16 +55,27 @@ export const depositIntoAccount = async (
   const accessToken = request.query.access_token as string;
   const userEmail = getEmailFromAccessToken(accessToken);
   const { amount, category } = request.payload;
-  console.log(userEmail);
   const user = await User.findOne({ where: { email: userEmail } });
   const result: string | Transaction = await makeTransaction(
     category,
     user!,
     amount
   );
+
   if (result instanceof Transaction) {
     return h.response(result).header("Content-Type", "application/json");
   }
 
   throw Boom.badRequest(result);
+};
+
+export const getUserBalance = async (
+  request: TransactionRequest,
+  h: ResponseToolkit
+) => {
+  const accessToken = request.query.access_token as string;
+  const userEmail = getEmailFromAccessToken(accessToken);
+  const user = await User.findOne({ where: { email: userEmail } });
+
+  return h.response({ username: user?.username, balance: user?.balance });
 };
