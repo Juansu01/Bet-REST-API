@@ -1,7 +1,11 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
 
 import { checkAccessToken } from "../middlewares/checkAccessToken";
-import { createNewBet, getAllBets } from "../handlers/betHandlers";
+import {
+  createNewBet,
+  getAllBets,
+  changeBetStatus,
+} from "../handlers/betHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
 export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -20,6 +24,17 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "GET",
     path: "/api/bets",
     handler: getAllBets,
+    options: {
+      pre: [
+        { method: checkAccessToken, assign: "checkAccessToken" },
+        { method: checkAdminPermissions, assign: "AdminPermissions" },
+      ],
+    },
+  },
+  {
+    method: "PATCH",
+    path: "/api/bets/{id}",
+    handler: changeBetStatus,
     options: {
       pre: [
         { method: checkAccessToken, assign: "checkAccessToken" },

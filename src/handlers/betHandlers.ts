@@ -27,3 +27,27 @@ export const getAllBets = async (request: BetRequest, h: ResponseToolkit) => {
     throw Boom.badImplementation(err.message);
   }
 };
+
+export const changeBetStatus = async (
+  request: BetRequest,
+  h: ResponseToolkit
+) => {
+  const { id } = request.params;
+  const { status } = request.payload;
+  const bet = await Bet.findOne({ where: { id: parseInt(id) } });
+
+  try {
+    if (bet) {
+      const previousStatus = bet.status;
+      bet.status = status;
+      await bet.save();
+      return h
+        .response(`Bet status changed from ${previousStatus} to ${bet.status}`)
+        .header("Content-Type", "application/json");
+    }
+  } catch (err) {
+    throw Boom.badImplementation(err);
+  }
+
+  throw Boom.notFound("Bet wasn't found.");
+};

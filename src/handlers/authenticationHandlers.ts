@@ -7,6 +7,7 @@ import {
 } from "src/types/authentication";
 import myDataSource from "../services/dbConnection";
 import { generateAccessToken } from "../services/accessTokenGenerators";
+import Boom from "@hapi/boom";
 
 export const registerHandler = async (
   request: RegisterRequest,
@@ -85,4 +86,29 @@ export const loginHandler = async (
   }
 
   return h.response("User not found.").code(404);
+};
+
+export const blockUser = async (
+  request: AuthenticationRequest,
+  h: ResponseToolkit
+) => {
+  const { id } = request.params;
+  const userToBlock = await User.findOneBy({ id: parseInt(id) });
+
+  if (userToBlock) {
+    if (userToBlock.role === "admin")
+      throw Boom.forbidden("Cannot block other admins.");
+
+    if (userToBlock.state === "blocked")
+      throw Boom.badRequest("User is already blocked.");
+
+    userToBlock.state = "blocked";
+    await userToBlock.save();
+
+    return h.response(
+      `User identified by email: ${userToBlock.email} has been blocked.`
+    );
+  }
+
+  throw Boom.notFound("User was not found.");
 };

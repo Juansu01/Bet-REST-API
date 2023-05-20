@@ -28,6 +28,8 @@ export class User extends BaseClass {
     enum: UserState,
     default: "active",
   })
+  state: string;
+
   @Column()
   first_name: string;
 
@@ -70,7 +72,7 @@ export class User extends BaseClass {
   @Column()
   document_id: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: "0.00" })
   balance: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
