@@ -70,11 +70,13 @@ export const loginHandler = async (
     where: {
       email: email,
     },
-    select: { password: true },
+    select: { password: true, state: true },
   });
   const user = results[0];
 
   if (user) {
+    if (user.state === "blocked")
+      throw Boom.forbidden("Your account was blocked.");
     if (password === user.password) {
       const accessToken: string = generateAccessToken(email);
       return h.response({
