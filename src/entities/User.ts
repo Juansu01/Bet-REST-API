@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, Unique } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Transaction } from "./Transaction";
+import { PlacedBet } from "./PlacedBet";
 
 enum UserRole {
   ADMIN = "admin",
@@ -70,4 +71,9 @@ export class User extends BaseClass {
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];
+
+  @OneToMany(() => PlacedBet, (placed_bet) => placed_bet.user, {
+    cascade: true,
+  })
+  placed_bets: PlacedBet[];
 }

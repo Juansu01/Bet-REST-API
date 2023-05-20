@@ -1,6 +1,7 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, ManyToOne } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
+import { User } from "./User";
 
 @Entity("placedbet")
 export class PlacedBet extends BaseClass {
@@ -15,4 +16,6 @@ export class PlacedBet extends BaseClass {
 
   @Column()
   amount: number;
+  @ManyToOne(() => User, (user) => user.placed_bets)
+  user: User;
 }
