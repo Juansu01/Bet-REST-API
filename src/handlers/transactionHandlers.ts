@@ -79,3 +79,23 @@ export const getUserBalance = async (
 
   return h.response({ username: user?.username, balance: user?.balance });
 };
+
+export const getUserTransactions = async (
+  request: TransactionRequest,
+  h: ResponseToolkit
+) => {
+  const accessToken = request.query.access_token as string;
+  const category = request.query.category as string;
+  const userEmail = getEmailFromAccessToken(accessToken);
+  let transactions;
+  const user = await User.findOne({ where: { email: userEmail } });
+  transactions = await Transaction.find({ where: { user_id: user!.id } });
+
+  if (category) {
+    transactions = await Transaction.find({
+      where: { category: category, user_id: user!.id },
+    });
+  }
+
+  return h.response(transactions);
+};
