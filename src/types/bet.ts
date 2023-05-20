@@ -7,6 +7,7 @@ interface BetPayload {
   status: BetStatus;
   access_token: string;
   result: string;
+  winning_option: string;
 }
 
 export interface BetRequest extends Request {

@@ -4,6 +4,10 @@ import Boom from "@hapi/boom";
 import { BetRequest } from "../types/bet";
 import { Bet } from "../entities/Bet";
 import myDataSource from "../services/dbConnection";
+import { PlacedBet } from "../entities/PlacedBet";
+import { User } from "../entities/User";
+import { makeTransaction } from "../services/makeDeposit";
+import { TransactionCategory } from "../entities/Transaction";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { match_id, status, result } = request.payload;
@@ -50,4 +54,60 @@ export const changeBetStatus = async (
   }
 
   throw Boom.notFound("Bet wasn't found.");
+};
+
+export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
+  const { id } = request.params;
+  const { winning_option } = request.payload;
+  const betToSettle = await Bet.findOne({
+    where: { id: parseInt(id) },
+    relations: { options: true },
+  });
+  let canBeSettled = false;
+  let odd: number | null = null;
+
+  if (!betToSettle) throw Boom.notFound("Bet was not found.");
+
+  if (betToSettle.status === "settled")
+    throw Boom.badRequest("Bet is already settled.");
+
+  betToSettle.options.forEach((option) => {
+    if (option.name === winning_option) {
+      canBeSettled = true;
+      odd = option.odd;
+    }
+  });
+
+  if (canBeSettled) {
+    const winningPlacedBets = await PlacedBet.find({
+      where: { bet_option: winning_option, bet_id: betToSettle.id },
+    });
+    if (!winningPlacedBets) {
+      throw Boom.notFound("Couldn't find any winners.");
+    }
+    const winnersList: string[] = [];
+    winningPlacedBets.forEach(async (placedBet) => {
+      const userToReward = await User.findOne({
+        where: { id: placedBet.user_id },
+      });
+      const amountToAdd = +placedBet.amount * +odd!;
+      console.log(
+        `${userToReward?.email} will be rewarded for ${amountToAdd}!`
+      );
+      await makeTransaction(
+        "winning" as TransactionCategory,
+        userToReward!,
+        amountToAdd
+      );
+      winnersList.push(
+        `User identified by Email: ${userToReward?.email} was rewarded for ${amountToAdd}`
+      );
+    });
+    betToSettle.result = winning_option;
+    betToSettle.status = "settled";
+    await betToSettle.save();
+    return h.response(winnersList);
+  }
+
+  throw Boom.notFound("Winning option is not inside Bet.");
 };
