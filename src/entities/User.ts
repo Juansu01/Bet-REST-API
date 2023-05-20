@@ -19,6 +19,7 @@ export class User extends BaseClass {
   @Column({
     type: "enum",
     enum: UserRole,
+    default: "user",
   })
   role: string;
 
