@@ -18,9 +18,7 @@ export class Transaction extends BaseClass {
   })
   category: string;
 
-  @Column({
-    type: "numeric",
-  })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   amount: number;
 
   @Column()
@@ -33,4 +31,7 @@ export class Transaction extends BaseClass {
     name: "user_id",
   })
   user: User;
+
+  @Column()
+  user_id: number;
 }

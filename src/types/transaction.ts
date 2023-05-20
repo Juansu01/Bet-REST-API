@@ -6,6 +6,7 @@ interface TransactionPayload {
   user_id: number;
   category: TransactionCategory;
   status: string;
+  amount: number;
 }
 
 export interface TransactionRequest extends Request {
