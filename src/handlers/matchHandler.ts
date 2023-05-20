@@ -28,6 +28,7 @@ export const getAllMatches = async (
     relations: {
       bets: true,
       teams: true,
+      event: true,
     },
   });
 
