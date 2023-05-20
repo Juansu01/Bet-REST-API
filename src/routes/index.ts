@@ -6,6 +6,7 @@ import { eventRoutes } from "./eventRoute";
 import { betRoutes } from "./betRoute";
 import { matchRoutes } from "./matchRoute";
 import { optionRoutes } from "./optionRoute";
+import { teamRoutes } from "./teamRoute";
 
 const routes: ServerRoute<ReqRefDefaults>[] = [
   ...homeRoutes,
@@ -14,6 +15,7 @@ const routes: ServerRoute<ReqRefDefaults>[] = [
   ...betRoutes,
   ...matchRoutes,
   ...optionRoutes,
+  ...teamRoutes,
 ];
 
 export default routes;
