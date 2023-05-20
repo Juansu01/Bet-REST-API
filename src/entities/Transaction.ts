@@ -3,7 +3,7 @@ import { ManyToOne, Column, Entity, JoinColumn } from "typeorm";
 import { User } from "./User";
 import { BaseClass } from "./BaseClass";
 
-enum TransactionCategory {
+export enum TransactionCategory {
   DEPOSIT = "deposit",
   WITHDRAW = "withdraw",
   BET = "bet",
