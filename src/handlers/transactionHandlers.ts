@@ -99,3 +99,23 @@ export const getUserTransactions = async (
 
   return h.response(transactions);
 };
+
+export const getUserTransactionsById = async (
+  request: TransactionRequest,
+  h: ResponseToolkit
+) => {
+  const category = request.query.category as string;
+  const { id } = request.params;
+  let transactions;
+  const user = await User.findOne({ where: { id: parseInt(id) } });
+  if (!user) throw Boom.notFound("User does not exist.");
+  transactions = await Transaction.find({ where: { user_id: user!.id } });
+
+  if (category) {
+    transactions = await Transaction.find({
+      where: { category: category, user_id: user!.id },
+    });
+  }
+
+  return h.response(transactions);
+};

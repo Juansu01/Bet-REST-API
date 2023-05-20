@@ -7,6 +7,7 @@ import {
   depositIntoAccount,
   getUserBalance,
   getUserTransactions,
+  getUserTransactionsById,
 } from "../handlers/transactionHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
@@ -52,6 +53,17 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: getUserTransactions,
     options: {
       pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/users/{id}/transactions",
+    handler: getUserTransactionsById,
+    options: {
+      pre: [
+        { method: checkAccessToken, assign: "checkAccessToken" },
+        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
+      ],
     },
   },
 ];
