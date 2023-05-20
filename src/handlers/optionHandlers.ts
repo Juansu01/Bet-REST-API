@@ -10,7 +10,6 @@ export const createNewOption = async (
   h: ResponseToolkit
 ) => {
   const { number, name, odd, did_win, bet_id } = request.payload;
-  console.log(odd);
   const newOption = Option.create({ number, name, odd, did_win });
   const result = await Bet.find({
     relations: ["options"],

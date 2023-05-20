@@ -11,9 +11,7 @@ export class Option extends BaseClass {
   @Column()
   name: string;
 
-  @Column({
-    type: "numeric",
-  })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   odd: number;
 
   @Column({
