@@ -24,7 +24,12 @@ export const getAllMatches = async (
   request: MatchRequest,
   h: ResponseToolkit
 ) => {
-  const matches = await myDataSource.getRepository(Match).find();
+  const matches = await myDataSource.getRepository(Match).find({
+    relations: {
+      bets: true,
+      teams: true,
+    },
+  });
 
   return h.response(matches).header("Content-Type", "application/json");
 };

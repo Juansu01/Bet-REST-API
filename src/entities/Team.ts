@@ -13,4 +13,7 @@ export class Team extends BaseClass {
   })
   @JoinColumn({ name: "match_id" })
   match: Match;
+
+  @Column()
+  match_id: number;
 }
