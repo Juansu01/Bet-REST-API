@@ -70,6 +70,9 @@ export class User extends BaseClass {
   @Column()
   document_id: string;
 
+  @Column({ type: "decimal", precision: 10, scale: 2 })
+  balance: number;
+
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];
 

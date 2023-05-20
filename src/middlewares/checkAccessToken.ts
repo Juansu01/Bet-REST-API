@@ -4,6 +4,10 @@ import Boom from "@hapi/boom";
 
 import { AuthenticationRequest } from "src/types/authentication";
 
+interface MyPayload {
+  userEmail: string;
+}
+
 export const checkAccessToken: ServerMethod = async (
   request: AuthenticationRequest,
   h: ResponseToolkit
@@ -19,6 +23,5 @@ export const checkAccessToken: ServerMethod = async (
     if (err?.message === "invalid signature")
       throw Boom.unauthorized("Invalid access token.");
   });
-
   return h.continue;
 };

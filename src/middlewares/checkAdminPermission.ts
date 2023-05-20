@@ -4,9 +4,7 @@ import Boom from "@hapi/boom";
 
 import { User } from "../entities/User";
 
-interface MyPayload extends JwtPayload {
-  userEmail: string;
-}
+import { MyPayload } from "../types/userEmailPayload";
 
 export const checkAdminPermissions: ServerMethod = async (
   request: Request,
