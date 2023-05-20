@@ -80,6 +80,18 @@ export const getUserBalance = async (
   return h.response({ username: user?.username, balance: user?.balance });
 };
 
+export const getUserBalanceById = async (
+  request: TransactionRequest,
+  h: ResponseToolkit
+) => {
+  const { id } = request.params;
+  const user = await User.findOne({ where: { id: parseInt(id) } });
+
+  if (!user) throw Boom.notFound("User was not found.");
+
+  return h.response({ username: user?.username, balance: user?.balance });
+};
+
 export const getUserTransactions = async (
   request: TransactionRequest,
   h: ResponseToolkit
