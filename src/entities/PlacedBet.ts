@@ -14,7 +14,7 @@ export class PlacedBet extends BaseClass {
   @Column()
   bet_option: string;
 
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   amount: number;
   @ManyToOne(() => User, (user) => user.placed_bets)
   user: User;
