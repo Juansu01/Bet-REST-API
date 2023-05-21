@@ -1,0 +1,476 @@
+openapi: 3.0.0
+info:
+  title: GreenRun Backend API
+  description: API documentation for GreenRun Backend
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Home page
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /api/login:
+    post:
+      summary: Log in with user credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequest"
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+        "401":
+          description: Unauthorized - wrong password
+          content:
+            text/plain:
+              schema:
+                type: string
+        "404":
+          description: User not found
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/users/block-user/{id}:
+    patch:
+      summary: Block a user by ID
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequest"
+      responses:
+        "200":
+          description: User blocked successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request - user is already blocked or trying to block an admin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /api/bet:
+    post:
+      summary: Create a new bet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BetRequest"
+      responses:
+        "200":
+          description: New bet created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bet"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /api/bets:
+    get:
+      summary: Get all bets
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bet"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /api/bets/{id}:
+    patch:
+      summary: Change bet status by ID
+      parameters:
+        - name: id
+          in: path
+          description: Bet ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      responses:
+        "200":
+          description: Bet status changed successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad request - bet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /api/settle-bet/{id}:
+    patch:
+      summary: Settle a bet by ID
+      parameters:
+        - name: id
+          in: path
+          description: Bet ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                winning_option:
+                  type: string
+      responses:
+        "200":
+          description: Bet settled successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "400":
+          description: Bad request - bet not found or already settled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "404":
+          description: Winning option is not inside the bet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /api/event:
+    post:
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventRequest"
+      responses:
+        "200":
+          description: New event created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /api/events:
+    get:
+      summary: Get all events
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /api/match:
+    post:
+      summary: Create a new match
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/matches:
+    get:
+      summary: Get all matches
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+        address:
+          type: string
+        gender:
+          type: string
+        birth_date:
+          type: string
+        country_id:
+          type: integer
+        city:
+          type: string
+        category:
+          type: string
+        document_id:
+          type: string
+    RegisterRequest:
+      type: object
+      properties:
+        role:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+        address:
+          type: string
+        gender:
+          type: string
+        birth_date:
+          type: string
+        country_id:
+          type: integer
+        city:
+          type: string
+        category:
+          type: string
+        document_id:
+          type: string
+    AuthenticationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    Bet:
+      type: object
+      properties:
+        id:
+          type: integer
+        match_id:
+          type: integer
+        status:
+          type: string
+        result:
+          type: string
+    BetRequest:
+      type: object
+      properties:
+        match_id:
+          type: integer
+        status:
+          type: string
+        result:
+          type: string
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        sport:
+          type: string
+    EventRequest:
+      type: object
+      properties:
+        sport:
+          type: string
+    MatchRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        event_id:
+          type: integer
+        winner:
+          type: string
+    Match:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        event_id:
+          type: integer
+        winner:
+          type: string
+        bets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Bet"
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
