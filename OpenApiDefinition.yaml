@@ -1,11 +1,13 @@
 openapi: 3.0.0
 info:
   title: GreenRun Backend API
-  description: API documentation for GreenRun Backend
+  description: API documentation for GreenRun Backend, this REST API implements different entities for a betting system.
   version: 1.0.0
 paths:
   /:
     get:
+      tags:
+        - Home
       summary: Home page
       responses:
         "200":
@@ -16,6 +18,8 @@ paths:
                 type: string
   /api/register:
     post:
+      tags:
+        - Registration
       summary: Register a new user
       requestBody:
         required: true
@@ -43,6 +47,8 @@ paths:
                     type: string
   /api/login:
     post:
+      tags:
+        - Authentication
       summary: Log in with user credentials
       requestBody:
         required: true
@@ -76,6 +82,8 @@ paths:
                 type: string
   /api/users/block-user/{id}:
     patch:
+      tags:
+        - Admin
       summary: Block a user by ID
       parameters:
         - name: id
@@ -117,6 +125,8 @@ paths:
                     type: string
   /api/bet:
     post:
+      tags:
+        - Bet
       summary: Create a new bet
       requestBody:
         required: true
@@ -144,6 +154,8 @@ paths:
                     type: string
   /api/bets:
     get:
+      tags:
+        - Bet
       summary: Get all bets
       responses:
         "200":
@@ -167,6 +179,9 @@ paths:
                     type: string
   /api/bets/{id}:
     patch:
+      tags:
+        - Bet
+        - Admin
       summary: Change bet status by ID
       parameters:
         - name: id
@@ -202,6 +217,9 @@ paths:
                     type: string
   /api/settle-bet/{id}:
     patch:
+      tags:
+        - Bet
+        - Admin
       summary: Settle a bet by ID
       parameters:
         - name: id
@@ -248,6 +266,8 @@ paths:
                     type: string
   /api/event:
     post:
+      tags:
+        - Event
       summary: Create a new event
       requestBody:
         required: true
@@ -275,6 +295,8 @@ paths:
                     type: string
   /api/events:
     get:
+      tags:
+        - Event
       summary: Get all events
       responses:
         "200":
@@ -298,6 +320,8 @@ paths:
                     type: string
   /api/match:
     post:
+      tags:
+        - Match
       summary: Create a new match
       requestBody:
         required: true
@@ -320,6 +344,8 @@ paths:
                 $ref: "#/components/schemas/Error"
   /api/matches:
     get:
+      tags:
+        - Match
       summary: Get all matches
       responses:
         "200":
@@ -330,6 +356,280 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Match"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/option:
+    post:
+      tags:
+        - Option
+      summary: Create a new option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OptionRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/options:
+    get:
+      tags:
+        - Option
+      summary: Get all options
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OptionRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/placed-bet:
+    post:
+      tags:
+        - Placed Bet
+      summary: Create a new placed bet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlacedBetRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlacedBetRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/placed-bets:
+    get:
+      tags:
+        - Placed Bet
+      summary: Get all placed bets
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlacedBetRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/team:
+    post:
+      tags:
+        - Team
+      summary: Create a new team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/teams:
+    get:
+      tags:
+        - Team
+      summary: Get all teams
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/transaction:
+    post:
+      tags:
+        - Transaction
+        - Admin
+      summary: Create a new transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/transactions:
+    get:
+      tags:
+        - Transaction
+        - Admin
+      summary: Get all transactions
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/transaction-by-user:
+    post:
+      tags:
+        - Transaction
+      summary: Make transaction for user that is currently logged in.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequestUser"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRequest"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/user/balance:
+    get:
+      tags:
+        - Balance
+      summary: Get user's balance by using session's email
+      responses:
+        "200":
+          description: Successful operation
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/my-transactions:
+    get:
+      tags:
+        - Transaction
+      summary: Get user's transaction's using session
+      responses:
+        "200":
+          description: Successful operation
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/users/{id}/transactions:
+    get:
+      tags:
+        - Transaction
+        - Admin
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to get transactions from
+      summary: Get user's transactions by id
+      responses:
+        "200":
+          description: Successful operation
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/users/{id}/balance:
+    get:
+      tags:
+        - Balance
+        - Admin
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to get balance from
+      summary: Get user's balance by id
+      responses:
+        "200":
+          description: Successful operation
         "500":
           description: Internal server error
           content:
@@ -442,6 +742,9 @@ components:
         sport:
           type: string
     MatchRequest:
+      required:
+        - event_id
+        - date
       type: object
       properties:
         date:
@@ -474,3 +777,85 @@ components:
           type: string
         error:
           type: string
+    OptionRequest:
+      required:
+        - number
+        - name
+        - odd
+      type: object
+      properties:
+        number:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Dangerous Cats
+        odd:
+          type: number
+          example: 1.3
+        did_win:
+          type: boolean
+          example: true
+        bet_id:
+          type: integer
+          example: 4
+    PlacedBetRequest:
+      required:
+        - bet_id
+        - bet_option
+        - amount
+      type: object
+      properties:
+        bet_id:
+          type: integer
+          example: 3
+        bet_option:
+          type: string
+          example: Thunder Wolfs
+        amount:
+          type: number
+          example: 50.45
+    TeamRequest:
+      type: object
+      required:
+        - match_id
+        - name
+      properties:
+        match_id:
+          type: integer
+          example: 7
+        name:
+          type: string
+          example: Savage Squirrels
+    TransactionRequest:
+      type: object
+      required:
+        - user_id
+        - category
+        - status
+        - amount
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        category:
+          type: string
+          example: deposit
+        status:
+          type: string
+          example: active
+        amount:
+          type: number
+          example: 54.23
+    TransactionRequestUser:
+      type: object
+      required:
+        - category
+        - amount
+      properties:
+        category:
+          type: string
+          example: deposit
+        amount:
+          type: number
+          example: 54.23
