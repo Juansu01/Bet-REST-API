@@ -85,7 +85,7 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
     if (!winningPlacedBets) {
       throw Boom.notFound("Couldn't find any winners.");
     }
-    const winnersList: string[] = [];
+    const winnersList: Object[] = [];
     winningPlacedBets.forEach(async (placedBet) => {
       const userToReward = await User.findOne({
         where: { id: placedBet.user_id },
@@ -99,14 +99,18 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
         userToReward!,
         amountToAdd
       );
-      winnersList.push(
-        `User identified by Email: ${userToReward?.email} was rewarded for ${amountToAdd}`
-      );
+      winnersList.push({
+        user_email: userToReward?.email,
+        received_amount: amountToAdd,
+      });
     });
     betToSettle.result = winning_option;
     betToSettle.status = "settled";
     await betToSettle.save();
-    return h.response(winnersList);
+    return h.response({
+      message: "Successfully settled.",
+      winners: winnersList,
+    });
   }
 
   throw Boom.notFound("Winning option is not inside Bet.");
