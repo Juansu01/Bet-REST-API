@@ -12,23 +12,24 @@ export const createNewTransaction = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  try {
-    const { user_id, category, status, amount } = request.payload;
-    const newTransaction = Transaction.create({
-      user_id,
-      category,
-      status,
-      amount,
-    });
+  const { user_id, category, status, amount } = request.payload;
+  const user = await User.findOneBy({ id: user_id });
 
-    await newTransaction.save();
-    return h
-      .response(newTransaction)
-      .header("Content-Type", "application/json");
-  } catch (err) {
-    console.log(err);
-    throw Boom.badImplementation(err.message);
-  }
+  if (!user) throw Boom.notFound("User not found, won't add new transaction.");
+
+  if (!Object.values(TransactionCategory).includes(category))
+    throw Boom.notAcceptable(
+      "Category must be of these categories: deposit, withdraw, winning, bet"
+    );
+
+  const newTransaction = Transaction.create({
+    user_id,
+    category,
+    status,
+    amount,
+  });
+  await newTransaction.save();
+  return h.response(newTransaction).header("Content-Type", "application/json");
 };
 
 export const getAllTransactions = async (
