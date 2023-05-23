@@ -26,10 +26,7 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/bets",
     handler: getAllBets,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "AdminPermissions" },
-      ],
+      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
     },
   },
   {
