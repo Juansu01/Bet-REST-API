@@ -4,12 +4,16 @@ import Boom from "@hapi/boom";
 import { TeamRequest } from "../types/team";
 import { Team } from "../entities/Team";
 import myDataSource from "../services/dbConnection";
+import { Match } from "../entities/Match";
 
 export const createNewTeam = async (
   request: TeamRequest,
   h: ResponseToolkit
 ) => {
   const { match_id, name } = request.payload;
+  const match = await Match.findOneBy({ id: match_id });
+
+  if (!match) return Boom.notFound("Couldn't find match, won't create team.");
   const newTeam = Team.create({ match_id, name });
 
   await newTeam.save();
