@@ -35,10 +35,11 @@ export const makeTransaction = async (
         await newTransaction.save();
         return newTransaction;
       }
+      return `Cannot ${depositType}, balance is not enough.`;
     }
     return `${depositType} is not a supported deposit type.`;
   } catch (err) {
     console.error(err);
-    return "";
+    throw Boom.badImplementation(err);
   }
 };
