@@ -9,7 +9,7 @@ import {
 export const placedBetRoutes: ServerRoute<ReqRefDefaults>[] = [
   {
     method: "POST",
-    path: "/api/placedbet",
+    path: "/api/placed-bet",
     handler: createNewPlacedBet,
     options: {
       pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
@@ -17,7 +17,7 @@ export const placedBetRoutes: ServerRoute<ReqRefDefaults>[] = [
   },
   {
     method: "GET",
-    path: "/api/placedbets",
+    path: "/api/placed-bets",
     handler: getAllPlacedBets,
     options: {
       pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],

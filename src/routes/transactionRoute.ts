@@ -34,7 +34,7 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
   },
   {
     method: "POST",
-    path: "/api/transactions",
+    path: "/api/transaction-by-user",
     handler: depositIntoAccount,
     options: {
       pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
