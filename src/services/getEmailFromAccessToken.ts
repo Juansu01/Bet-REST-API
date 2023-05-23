@@ -1,9 +1,15 @@
-import { decode, Secret, verify } from "jsonwebtoken";
+import { Secret, verify } from "jsonwebtoken";
+import Boom from "@hapi/boom";
 
 import { MyPayload } from "../types/userEmailPayload";
 
 export const getEmailFromAccessToken = (accessToken: string): string => {
   const secret: Secret = process.env.ACCESS_TOKEN_SECRET as Secret;
   const payload = verify(accessToken, secret, undefined) as MyPayload;
-  return payload.userEmail;
+
+  if (payload) return payload.userEmail;
+
+  throw Boom.badImplementation(
+    "Access token expired while processing request."
+  );
 };
