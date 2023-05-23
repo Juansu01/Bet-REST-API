@@ -17,11 +17,11 @@ export const createNewOption = async (
   });
   const betToAddOptionTo = result[0];
 
-  if (betToAddOptionTo) {
-    betToAddOptionTo.options.push(newOption);
-    await betToAddOptionTo.save();
-  }
+  if (!betToAddOptionTo)
+    throw Boom.notFound("Couldn't find bet, won't create option.");
 
+  betToAddOptionTo.options.push(newOption);
+  await betToAddOptionTo.save();
   await newOption.save();
 
   return h.response(newOption).header("Content-Type", "application/json");
