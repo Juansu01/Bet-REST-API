@@ -29,7 +29,10 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/transactions",
     handler: getAllTransactions,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      pre: [
+        { method: checkAccessToken, assign: "checkAccessToken" },
+        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
+      ],
     },
   },
   {
