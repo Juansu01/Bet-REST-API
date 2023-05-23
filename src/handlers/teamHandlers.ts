@@ -13,7 +13,7 @@ export const createNewTeam = async (
   const { match_id, name } = request.payload;
   const match = await Match.findOneBy({ id: match_id });
 
-  if (!match) return Boom.notFound("Couldn't find match, won't create team.");
+  if (!match) throw Boom.notFound("Couldn't find match, won't create team.");
   const newTeam = Team.create({ match_id, name });
 
   await newTeam.save();
