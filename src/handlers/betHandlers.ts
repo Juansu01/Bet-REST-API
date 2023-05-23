@@ -8,6 +8,7 @@ import { PlacedBet } from "../entities/PlacedBet";
 import { User } from "../entities/User";
 import { makeTransaction } from "../services/makeDeposit";
 import { TransactionCategory } from "../entities/Transaction";
+import { Match } from "../entities/Match";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { match_id, status, result } = request.payload;
@@ -71,9 +72,11 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
   if (betToSettle.status === "settled")
     throw Boom.badRequest("Bet is already settled.");
 
-  betToSettle.options.forEach((option) => {
+  betToSettle.options.forEach(async (option) => {
     if (option.name === winning_option) {
       canBeSettled = true;
+      option.did_win = true;
+      await option.save();
       odd = option.odd;
     }
   });
@@ -104,6 +107,8 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
         received_amount: amountToAdd,
       });
     });
+    const matchFromBet = await Match.findOneBy({ id: betToSettle.match_id });
+    if (matchFromBet) matchFromBet.winner = winning_option;
     betToSettle.result = winning_option;
     betToSettle.status = "settled";
     await betToSettle.save();
