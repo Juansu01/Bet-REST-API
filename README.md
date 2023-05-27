@@ -15,8 +15,7 @@ REST API that implements a betting system and performs automatic payments for wi
 I used both AWS and GCP, the API docs are served by an EC2 instance from AWS, and the API itself is
 served by GCP Compute Engine.
 
-- _API Server:_ http://34.125.52.24:4000
-- _API Docs:_ http://52.90.129.72:5000/docs/
+Both the API and the documentation servers are down, I'm using them for different applications.
 
 ### Final DB Model
 
