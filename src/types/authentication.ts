@@ -1,10 +1,5 @@
 import { Request, AuthCredentials } from "hapi";
 
-interface UserCredentials extends AuthCredentials {
-  username: string;
-  password: string;
-}
-
 interface AuthenticationPayload {
   email: string;
   password: string;
@@ -34,4 +29,9 @@ export interface RegisterRequest extends Request {
 
 export interface AuthenticationRequest extends Request {
   payload: AuthenticationPayload;
+}
+
+export interface UserCredentials extends AuthCredentials {
+  username: string;
+  password: string;
 }
