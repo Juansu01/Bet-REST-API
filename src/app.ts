@@ -1,8 +1,10 @@
 import Hapi from "@hapi/hapi";
 import dotenv from "dotenv";
+import basic from "@hapi/basic";
 
 import routes from "./routes";
 import myDataSource from "./services/dbConnection";
+import { basicAuthentication } from "./auth/basicAuth";
 
 dotenv.config();
 const init = async () => {
@@ -20,6 +22,8 @@ const init = async () => {
       console.error("Error during Data Source initialization:", err);
     });
 
+  await server.register(basic);
+  server.auth.strategy("simple", "basic", { validate: basicAuthentication });
   server.route(routes);
   await server.start();
   console.log("Server running on %s", server.info.uri);
