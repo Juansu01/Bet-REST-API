@@ -7,5 +7,8 @@ export const homeRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "GET",
     path: "/",
     handler: homeHandler,
+    options: {
+      auth: "simple",
+    },
   },
 ];
