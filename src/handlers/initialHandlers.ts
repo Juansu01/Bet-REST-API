@@ -1,9 +1,6 @@
-import { Request, ResponseToolkit, AuthCredentials } from "hapi";
+import { Request, ResponseToolkit } from "hapi";
 
-interface UserCredentials extends AuthCredentials {
-  username: string;
-  password: string;
-}
+import { UserCredentials } from "../types/authentication";
 
 export const homeHandler = async (request: Request, h: ResponseToolkit) => {
   const credentials = request.auth.credentials as UserCredentials;
