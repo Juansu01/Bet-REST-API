@@ -11,6 +11,7 @@
   "author": "Juansu01",
   "license": "ISC",
   "dependencies": {
+    "@hapi/basic": "^7.0.1",
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.3.2",
     "concurrently": "^8.0.1",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@types/hapi": "^18.0.8",
+    "@types/hapi__basic": "^5.1.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.1.5"
   }
