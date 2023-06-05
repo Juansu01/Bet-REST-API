@@ -28,7 +28,7 @@ const init = async () => {
   server.auth.strategy("simple", "basic", { validate: basicAuthentication });
   await server.register(Jwt);
   server.auth.strategy("jwt", "jwt", {
-    keys: "my_secret",
+    keys: process.env.ACCESS_TOKEN_SECRET as string,
     verify: false,
     validate: validateToken,
   });
