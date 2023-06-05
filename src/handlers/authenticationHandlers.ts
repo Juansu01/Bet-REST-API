@@ -73,7 +73,7 @@ export const loginHandler = async (
     where: {
       email: email,
     },
-    select: { password: true, state: true },
+    select: { password: true, state: true, email: true, role: true },
   });
   const user = results[0];
 
@@ -81,7 +81,7 @@ export const loginHandler = async (
     if (user.state === "blocked")
       throw Boom.forbidden("Your account was blocked.");
     if (password === user.password) {
-      const accessToken: string = hapiJWTGenerateToken(email);
+      const accessToken: string = hapiJWTGenerateToken(user.email, user.role);
       return h.response({
         message: "Logged in successfully!",
         access_token: accessToken,
