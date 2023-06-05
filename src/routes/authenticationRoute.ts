@@ -18,6 +18,9 @@ export const authenticationRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "POST",
     path: "/api/login",
     handler: loginHandler,
+    options: {
+      auth: "simple",
+    },
   },
   {
     method: "PATCH",
