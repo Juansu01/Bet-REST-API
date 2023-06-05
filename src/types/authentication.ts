@@ -1,4 +1,5 @@
 import { Request, AuthCredentials } from "hapi";
+import { HapiJwt } from "@hapi/jwt";
 
 interface AuthenticationPayload {
   email: string;
@@ -32,6 +33,11 @@ export interface AuthenticationRequest extends Request {
 }
 
 export interface UserCredentials extends AuthCredentials {
-  username: string;
-  password: string;
+  email: string;
+  role: string;
+}
+
+export interface DecodedToken extends HapiJwt.DecodedToken<HapiJwt.JwtRefs> {
+  email: string;
+  role: string;
 }
