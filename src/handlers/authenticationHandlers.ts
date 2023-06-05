@@ -6,7 +6,10 @@ import {
   AuthenticationRequest,
 } from "src/types/authentication";
 import myDataSource from "../services/dbConnection";
-import { generateAccessToken } from "../services/accessTokenGenerators";
+import {
+  generateAccessToken,
+  hapiJWTGenerateToken,
+} from "../services/accessTokenGenerators";
 import Boom from "@hapi/boom";
 
 export const registerHandler = async (
@@ -78,7 +81,7 @@ export const loginHandler = async (
     if (user.state === "blocked")
       throw Boom.forbidden("Your account was blocked.");
     if (password === user.password) {
-      const accessToken: string = generateAccessToken(email);
+      const accessToken: string = hapiJWTGenerateToken(email);
       return h.response({
         message: "Logged in successfully!",
         access_token: accessToken,
