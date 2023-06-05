@@ -29,7 +29,11 @@ const init = async () => {
   await server.register(Jwt);
   server.auth.strategy("jwt", "jwt", {
     keys: process.env.ACCESS_TOKEN_SECRET as string,
-    verify: false,
+    verify: {
+      aud: "urn:audience:test",
+      iss: "urn:issuer:test",
+      sub: "user-session",
+    },
     validate: validateToken,
   });
   server.route(routes);
