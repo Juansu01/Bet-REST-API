@@ -11,13 +11,14 @@ export const generateAccessToken = (userEmail: string) => {
   });
 };
 
-export const hapiJWTGenerateToken = (userEmail: string) => {
+export const hapiJWTGenerateToken = (userEmail: string, userRole: string) => {
   const secret = process.env.ACCESS_TOKEN_SECRET as string;
   const token = Jwt.token.generate(
     {
       aud: "urn:audience:test",
       iss: "urn:issuer:test",
-      userEmail,
+      email: userEmail,
+      role: userRole,
       sub: "user-session",
     },
     {
