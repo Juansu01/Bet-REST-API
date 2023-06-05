@@ -9,9 +9,13 @@ export const basicAuthentication = async (
   password: string,
   h: ResponseToolkit
 ) => {
-  const user = await User.findOneBy({ username: username });
+  const user = await User.findOneBy({ email: username });
 
-  if (user) return { isValid: true, credentials: { username, password } };
+  if (user)
+    return {
+      isValid: true,
+      credentials: { userEmail: user.email, userRole: user.role },
+    };
 
   return { isValid: false };
 };
