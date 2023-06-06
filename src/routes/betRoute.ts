@@ -15,10 +15,8 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/bet",
     handler: createNewBet,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "AdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
     },
   },
   {
@@ -26,7 +24,7 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/bets",
     handler: getAllBets,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -34,10 +32,8 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/bets/{id}",
     handler: changeBetStatus,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "AdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
     },
   },
   {
@@ -45,10 +41,8 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/settle-bet/{id}",
     handler: settleBet,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "AdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
     },
   },
 ];
