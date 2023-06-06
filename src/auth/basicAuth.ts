@@ -26,7 +26,7 @@ export const basicAuthentication = async (
     if (user.state === "blocked") throw Boom.unauthorized("User is blocked.");
     return {
       isValid: true,
-      credentials: { userEmail: user.email, userRole: user.role },
+      credentials: { email: user.email, role: user.role },
     };
   }
 
