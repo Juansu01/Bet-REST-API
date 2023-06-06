@@ -75,10 +75,8 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/users/{id}/balance",
     handler: getUserBalanceById,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
     },
   },
 ];
