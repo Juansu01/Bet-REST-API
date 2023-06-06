@@ -5,7 +5,6 @@ import {
   loginHandler,
   blockUser,
 } from "../handlers/authenticationHandlers";
-import { checkAccessToken } from "../middlewares/checkAccessToken";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
 export const authenticationRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -27,10 +26,8 @@ export const authenticationRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/users/block-user/{id}",
     handler: blockUser,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "AdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
     },
   },
 ];
