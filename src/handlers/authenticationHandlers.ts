@@ -4,7 +4,8 @@ import { User } from "../entities/User";
 import {
   RegisterRequest,
   AuthenticationRequest,
-} from "src/types/authentication";
+  UserCredentials,
+} from "../types/authentication";
 import myDataSource from "../services/dbConnection";
 import {
   generateAccessToken,
@@ -67,30 +68,15 @@ export const loginHandler = async (
   request: AuthenticationRequest,
   h: ResponseToolkit
 ) => {
-  const { email, password } = request.payload;
-
-  const results = await myDataSource.getRepository(User).find({
-    where: {
-      email: email,
-    },
-    select: { password: true, state: true, email: true, role: true },
+  const userCredentials = request.auth.credentials as UserCredentials;
+  const accessToken: string = hapiJWTGenerateToken(
+    userCredentials.email,
+    userCredentials.role
+  );
+  return h.response({
+    message: "Logged in successfully!",
+    access_token: accessToken,
   });
-  const user = results[0];
-
-  if (user) {
-    if (user.state === "blocked")
-      throw Boom.forbidden("Your account was blocked.");
-    if (password === user.password) {
-      const accessToken: string = hapiJWTGenerateToken(user.email, user.role);
-      return h.response({
-        message: "Logged in successfully!",
-        access_token: accessToken,
-      });
-    }
-    return h.response("Wrong password.").code(401);
-  }
-
-  return h.response("User not found.").code(404);
 };
 
 export const blockUser = async (
