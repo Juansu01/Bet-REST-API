@@ -1,6 +1,5 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
 
-import { checkAccessToken } from "../middlewares/checkAccessToken";
 import {
   createNewBet,
   getAllBets,
