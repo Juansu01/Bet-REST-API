@@ -7,6 +7,7 @@ import myDataSource from "../services/dbConnection";
 import { getEmailFromAccessToken } from "../services/getEmailFromAccessToken";
 import { User } from "../entities/User";
 import { makeTransaction } from "../services/makeDeposit";
+import { UserCredentials } from "../types/authentication";
 
 export const createNewTransaction = async (
   request: TransactionRequest,
@@ -74,9 +75,8 @@ export const getUserBalance = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  const accessToken = request.query.access_token as string;
-  const userEmail = getEmailFromAccessToken(accessToken);
-  const user = await User.findOne({ where: { email: userEmail } });
+  const userCredentials = request.auth.credentials as UserCredentials;
+  const user = await User.findOne({ where: { email: userCredentials.email } });
 
   return h.response({ username: user?.username, balance: user?.balance });
 };
