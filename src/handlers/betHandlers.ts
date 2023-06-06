@@ -9,6 +9,7 @@ import { User } from "../entities/User";
 import { makeTransaction } from "../services/makeDeposit";
 import { TransactionCategory } from "../entities/Transaction";
 import { Match } from "../entities/Match";
+import { BetStatus } from "../entities/Bet";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { match_id, status, result } = request.payload;
@@ -41,17 +42,21 @@ export const changeBetStatus = async (
   const { status } = request.payload;
   const bet = await Bet.findOne({ where: { id: parseInt(id) } });
 
-  try {
-    if (bet) {
-      const previousStatus = bet.status;
-      bet.status = status;
-      await bet.save();
-      return h
-        .response(`Bet status changed from ${previousStatus} to ${bet.status}`)
-        .header("Content-Type", "application/json");
-    }
-  } catch (err) {
-    throw Boom.badImplementation(err);
+  if (bet) {
+    if (bet.status === status)
+      throw Boom.badRequest(`Bet status is ${bet.status} already.`);
+
+    if (!Object.values(BetStatus).includes(status as BetStatus))
+      throw Boom.badRequest(
+        `Bet status ${status} is not inside valid statuses ` +
+          "must be: active, cancelled, or settled."
+      );
+    const previousStatus = bet.status;
+    bet.status = status;
+    await bet.save();
+    return h
+      .response(`Bet status changed from ${previousStatus} to ${bet.status}`)
+      .header("Content-Type", "application/json");
   }
 
   throw Boom.notFound("Bet wasn't found.");
