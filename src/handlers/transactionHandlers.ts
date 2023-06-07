@@ -23,14 +23,17 @@ export const createNewTransaction = async (
       "Category must be of these categories: deposit, withdraw, winning, bet"
     );
 
-  const newTransaction = Transaction.create({
-    user_id,
+  const result: string | Transaction = await makeTransaction(
     category,
-    status,
-    amount,
-  });
-  await newTransaction.save();
-  return h.response(newTransaction).header("Content-Type", "application/json");
+    user,
+    amount
+  );
+
+  if (result instanceof Transaction) {
+    return h.response(result).header("Content-Type", "application/json");
+  }
+
+  throw Boom.badRequest(result);
 };
 
 export const getAllTransactions = async (
