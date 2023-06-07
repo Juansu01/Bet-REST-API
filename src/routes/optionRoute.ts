@@ -9,7 +9,7 @@ export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/option",
     handler: createNewOption,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -17,7 +17,7 @@ export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/options",
     handler: getAllOptions,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
 ];
