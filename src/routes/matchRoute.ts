@@ -9,7 +9,7 @@ export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/match",
     handler: createNewMatch,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -17,7 +17,7 @@ export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/matches",
     handler: getAllMatches,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
 ];
