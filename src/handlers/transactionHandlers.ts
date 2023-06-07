@@ -124,17 +124,23 @@ export const getUserTransactionsById = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  const category = request.query.category as string;
+  const category = request.query.category as TransactionCategory;
   const { id } = request.params;
   let transactions;
   const user = await User.findOne({ where: { id: parseInt(id) } });
+
   if (!user) throw Boom.notFound("User does not exist.");
-  transactions = await Transaction.find({ where: { user_id: user!.id } });
 
   if (category) {
+    if (!Object.values(TransactionCategory).includes(category))
+      throw Boom.notAcceptable(
+        "Category must be of these categories: deposit, withdraw, winning, bet"
+      );
     transactions = await Transaction.find({
-      where: { category: category, user_id: user!.id },
+      where: { category: category, user_id: user.id },
     });
+  } else {
+    transactions = await Transaction.find({ where: { user_id: user.id } });
   }
 
   return h.response(transactions);
