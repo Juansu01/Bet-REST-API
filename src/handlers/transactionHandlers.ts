@@ -97,14 +97,21 @@ export const getUserTransactions = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  const accessToken = request.query.access_token as string;
-  const category = request.query.category as string;
-  const userEmail = getEmailFromAccessToken(accessToken);
+  const category = request.query.category as TransactionCategory;
+  const userCredentials = request.auth.credentials as UserCredentials;
   let transactions;
-  const user = await User.findOne({ where: { email: userEmail } });
-  transactions = await Transaction.find({ where: { user_id: user!.id } });
+  const user = await User.findOne({ where: { email: userCredentials.email } });
+
+  if (!user) throw Boom.notFound("User was not found.");
+
+  transactions = await Transaction.find({ where: { user_id: user.id } });
 
   if (category) {
+    if (!Object.values(TransactionCategory).includes(category))
+      throw Boom.notAcceptable(
+        "Category must be of these categories: deposit, withdraw, winning, bet"
+      );
+
     transactions = await Transaction.find({
       where: { category: category, user_id: user!.id },
     });
