@@ -12,7 +12,7 @@ export const placedBetRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/placed-bet",
     handler: createNewPlacedBet,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -20,7 +20,7 @@ export const placedBetRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/placed-bets",
     handler: getAllPlacedBets,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
 ];
