@@ -4,7 +4,6 @@ import Boom from "@hapi/boom";
 import { TransactionRequest } from "../types/transaction";
 import { Transaction, TransactionCategory } from "../entities/Transaction";
 import myDataSource from "../services/dbConnection";
-import { getEmailFromAccessToken } from "../services/getEmailFromAccessToken";
 import { User } from "../entities/User";
 import { makeTransaction } from "../services/makeDeposit";
 import { UserCredentials } from "../types/authentication";

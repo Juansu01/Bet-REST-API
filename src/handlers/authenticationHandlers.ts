@@ -6,11 +6,7 @@ import {
   AuthenticationRequest,
   UserCredentials,
 } from "../types/authentication";
-import myDataSource from "../services/dbConnection";
-import {
-  generateAccessToken,
-  hapiJWTGenerateToken,
-} from "../services/accessTokenGenerators";
+import { hapiJWTGenerateToken } from "../services/accessTokenGenerators";
 import Boom from "@hapi/boom";
 
 export const registerHandler = async (
