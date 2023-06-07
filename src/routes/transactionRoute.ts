@@ -18,10 +18,8 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/transaction",
     handler: createNewTransaction,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
     },
   },
   {
@@ -29,10 +27,8 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/transactions",
     handler: getAllTransactions,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
     },
   },
   {
@@ -40,7 +36,7 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/transaction-by-user",
     handler: depositIntoAccount,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -56,7 +52,7 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/my-transactions",
     handler: getUserTransactions,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -64,10 +60,8 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/users/{id}/transactions",
     handler: getUserTransactionsById,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
     },
   },
   {
