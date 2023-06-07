@@ -9,7 +9,7 @@ export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/team",
     handler: createNewTeam,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -17,7 +17,7 @@ export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/teams",
     handler: getAllTeams,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
 ];
