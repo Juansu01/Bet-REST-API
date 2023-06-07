@@ -10,7 +10,7 @@ export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/event",
     handler: createNewEvent,
     options: {
-      pre: [{ method: checkAccessToken, assign: "checkAccessToken" }],
+      auth: "jwt",
     },
   },
   {
@@ -18,10 +18,8 @@ export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
     path: "/api/events",
     handler: getAllEvents,
     options: {
-      pre: [
-        { method: checkAccessToken, assign: "checkAccessToken" },
-        { method: checkAdminPermissions, assign: "checkAdminPermissions" },
-      ],
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
     },
   },
 ];
