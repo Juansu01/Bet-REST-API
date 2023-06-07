@@ -54,13 +54,20 @@ export const depositIntoAccount = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  const accessToken = request.query.access_token as string;
-  const userEmail = getEmailFromAccessToken(accessToken);
+  const userCredentials = request.auth.credentials as UserCredentials;
   const { amount, category } = request.payload;
-  const user = await User.findOne({ where: { email: userEmail } });
+  const user = await User.findOne({ where: { email: userCredentials.email } });
+
+  if (!user) throw Boom.notFound("User was not found.");
+
+  if (!Object.values(TransactionCategory).includes(category))
+    throw Boom.notAcceptable(
+      "Category must be of these categories: deposit, withdraw, winning, bet"
+    );
+
   const result: string | Transaction = await makeTransaction(
     category,
-    user!,
+    user,
     amount
   );
 
