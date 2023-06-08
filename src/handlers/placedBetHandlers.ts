@@ -3,11 +3,10 @@ import Boom from "@hapi/boom";
 
 import { PlacedBetRequest } from "../types/placedBet";
 import { PlacedBet } from "../entities/PlacedBet";
-import myDataSource from "../services/dbConnection";
 import { User } from "../entities/User";
 import { Bet } from "../entities/Bet";
 import { UserCredentials } from "../types/authentication";
-import { makeTransaction } from "../services/makeDeposit";
+import { makeTransaction } from "../services/transactionService";
 import { TransactionCategory } from "../entities/Transaction";
 
 export const createNewPlacedBet = async (
