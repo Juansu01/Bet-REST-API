@@ -5,18 +5,19 @@ import { PlacedBetRequest } from "../types/placedBet";
 import { PlacedBet } from "../entities/PlacedBet";
 import myDataSource from "../services/dbConnection";
 import { User } from "../entities/User";
-import { getEmailFromAccessToken } from "../services/getEmailFromAccessToken";
 import { Bet } from "../entities/Bet";
+import { UserCredentials } from "../types/authentication";
+import { makeTransaction } from "../services/makeDeposit";
+import { TransactionCategory } from "../entities/Transaction";
 
 export const createNewPlacedBet = async (
   request: PlacedBetRequest,
   h: ResponseToolkit
 ) => {
   const { bet_id, bet_option, amount } = request.payload;
-  const accessToken = request.query.access_token as string;
-  const userEmail = getEmailFromAccessToken(accessToken);
+  const userCredentials = request.auth.credentials as UserCredentials;
   const user = await User.findOne({
-    where: { email: userEmail },
+    where: { email: userCredentials.email },
     relations: {
       placed_bets: true,
     },
@@ -29,32 +30,36 @@ export const createNewPlacedBet = async (
   });
   let canPlaceBet = false;
 
-  if (user) {
-    if (betToPickFrom) {
-      betToPickFrom.options.forEach((option) => {
-        if (option.name === bet_option) {
-          canPlaceBet = true;
-        }
-      });
-      if (canPlaceBet) {
-        const newPlacedBet = PlacedBet.create({
-          user_id: user.id,
-          bet_id,
-          bet_option,
-          amount,
-        });
-        user.placed_bets.push(newPlacedBet);
-        await user.save();
-        await newPlacedBet.save();
-        return h
-          .response(newPlacedBet)
-          .header("Content-Type", "application/json");
-      }
-      throw Boom.notFound("The option you chose is not available inside bet.");
+  if (!user) throw Boom.notFound("User was not found, cannot add Placed Bet.");
+
+  if (!betToPickFrom) throw Boom.notFound("The Bet you picked wasn't found.");
+
+  if (betToPickFrom.status === "settled")
+    throw Boom.badRequest("Cannot place a bet on a settled bet.");
+
+  if (user.balance < amount)
+    throw Boom.badRequest("Cannot place bet, balance is not enough.");
+
+  betToPickFrom.options.forEach((option) => {
+    if (option.name === bet_option) {
+      canPlaceBet = true;
     }
-    throw Boom.notFound("The Bet you picked wasn't found.");
-  }
-  throw Boom.notFound("User was not found, cannot add Placed Bet.");
+  });
+
+  if (!canPlaceBet)
+    throw Boom.notFound("The option you chose is not available inside bet.");
+
+  const newPlacedBet = PlacedBet.create({
+    user_id: user.id,
+    bet_id,
+    bet_option,
+    amount,
+  });
+  await makeTransaction(TransactionCategory.BET, user, amount);
+  user.placed_bets.push(newPlacedBet);
+  await user.save();
+  await newPlacedBet.save();
+  return h.response(newPlacedBet).header("Content-Type", "application/json");
 };
 
 export const getAllPlacedBets = async (
