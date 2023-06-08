@@ -5,7 +5,7 @@ import { TransactionRequest } from "../types/transaction";
 import { Transaction, TransactionCategory } from "../entities/Transaction";
 import myDataSource from "../services/dbConnection";
 import { User } from "../entities/User";
-import { makeTransaction } from "../services/makeDeposit";
+import { makeTransaction } from "../services/transactionService";
 import { UserCredentials } from "../types/authentication";
 
 export const createNewTransaction = async (
