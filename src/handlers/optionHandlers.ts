@@ -11,11 +11,10 @@ export const createNewOption = async (
 ) => {
   const { number, name, odd, did_win, bet_id } = request.payload;
   const newOption = Option.create({ number, name, odd, did_win });
-  const result = await Bet.find({
+  const betToAddOptionTo = await Bet.findOne({
     relations: ["options"],
     where: { id: bet_id },
   });
-  const betToAddOptionTo = result[0];
 
   if (!betToAddOptionTo)
     throw Boom.notFound("Couldn't find bet, won't create option.");
@@ -31,13 +30,7 @@ export const getAllOptions = async (
   request: OptionRequest,
   h: ResponseToolkit
 ) => {
-  try {
-    const options = await Option.createQueryBuilder("option")
-      .leftJoinAndSelect("option.bets", "bet")
-      .getMany();
+  const allOptions = await Option.find({ relations: { bets: true } });
 
-    return h.response(options).header("Content-Type", "application/json");
-  } catch (err) {
-    throw Boom.badImplementation(err.message);
-  }
+  return h.response(allOptions).header("Content-Type", "application/json");
 };
