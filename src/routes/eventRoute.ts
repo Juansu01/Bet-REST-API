@@ -1,6 +1,6 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
+import Joi from "joi";
 
-import { checkAccessToken } from "../middlewares/checkAccessToken";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 import { createNewEvent, getAllEvents } from "../handlers/eventHandlers";
 
@@ -11,6 +11,11 @@ export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: createNewEvent,
     options: {
       auth: "jwt",
+      validate: {
+        payload: Joi.object({
+          sport: Joi.string().required(),
+        }),
+      },
     },
   },
   {
