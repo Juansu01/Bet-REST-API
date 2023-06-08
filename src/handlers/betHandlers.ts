@@ -6,7 +6,7 @@ import { Bet } from "../entities/Bet";
 import myDataSource from "../services/dbConnection";
 import { PlacedBet } from "../entities/PlacedBet";
 import { User } from "../entities/User";
-import { makeTransaction } from "../services/makeDeposit";
+import { makeTransaction } from "../services/transactionService";
 import { TransactionCategory } from "../entities/Transaction";
 import { Match } from "../entities/Match";
 import { BetStatus } from "../entities/Bet";
