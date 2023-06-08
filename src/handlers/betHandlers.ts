@@ -91,7 +91,7 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
       where: { bet_option: winning_option, bet_id: betToSettle.id },
     });
     if (!winningPlacedBets) {
-      throw Boom.notFound("Couldn't find any winners.");
+      return h.response("There weren't any winning placed bets.");
     }
     const winnersList: Object[] = [];
     winningPlacedBets.forEach(async (placedBet) => {
