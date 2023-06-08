@@ -66,13 +66,11 @@ export const getAllPlacedBets = async (
   request: PlacedBetRequest,
   h: ResponseToolkit
 ) => {
-  try {
-    const placedBets = await myDataSource.getRepository(PlacedBet).find({
-      relations: { user: true },
-    });
+  const placedBets = await PlacedBet.find({
+    relations: {
+      user: true,
+    },
+  });
 
-    return h.response(placedBets).header("Content-Type", "application/json");
-  } catch (err) {
-    throw Boom.badImplementation(err.message);
-  }
+  return h.response(placedBets).header("Content-Type", "application/json");
 };
