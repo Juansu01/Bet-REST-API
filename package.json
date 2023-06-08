@@ -17,6 +17,7 @@
     "@hapi/jwt": "^3.2.0",
     "concurrently": "^8.0.1",
     "dotenv": "^16.0.3",
+    "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",

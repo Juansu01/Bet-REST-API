@@ -1,4 +1,5 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
+import Joi from "joi";
 
 import { checkAccessToken } from "../middlewares/checkAccessToken";
 import {
@@ -20,6 +21,16 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
+      validate: {
+        payload: Joi.object({
+          category: Joi.string()
+            .valid("withdraw", "deposit", "winning", "bet")
+            .required(),
+          amount: Joi.number().min(1).max(200).required(),
+          user_id: Joi.number().min(1).required(),
+          status: Joi.string(),
+        }),
+      },
     },
   },
   {
@@ -37,6 +48,15 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: depositIntoAccount,
     options: {
       auth: "jwt",
+      validate: {
+        payload: Joi.object({
+          category: Joi.string()
+            .valid("withdraw", "deposit", "winning", "bet")
+            .required(),
+          amount: Joi.number().min(1).max(200).required(),
+          status: Joi.string(),
+        }),
+      },
     },
   },
   {
@@ -62,6 +82,14 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
+      validate: {
+        params: Joi.object({
+          id: Joi.number().required(),
+        }),
+        query: Joi.object({
+          category: Joi.string().valid("withdraw", "deposit", "winning", "bet"),
+        }),
+      },
     },
   },
   {
