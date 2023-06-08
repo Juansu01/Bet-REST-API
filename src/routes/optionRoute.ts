@@ -1,6 +1,6 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
+import Joi from "joi";
 
-import { checkAccessToken } from "../middlewares/checkAccessToken";
 import { createNewOption, getAllOptions } from "../handlers/optionHandlers";
 
 export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -10,6 +10,15 @@ export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: createNewOption,
     options: {
       auth: "jwt",
+      validate: {
+        payload: Joi.object({
+          number: Joi.number().min(1).required(),
+          name: Joi.string().required(),
+          odd: Joi.number().required(),
+          did_win: Joi.boolean().optional(),
+          bet_id: Joi.number().min(1).required(),
+        }),
+      },
     },
   },
   {
