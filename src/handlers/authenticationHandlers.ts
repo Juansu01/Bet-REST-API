@@ -30,34 +30,28 @@ export const registerHandler = async (
     document_id,
   } = request.payload;
 
-  try {
-    const newUser = User.create({
-      role,
-      first_name,
-      last_name,
-      phone,
-      email,
-      password,
-      username,
-      address,
-      gender,
-      birth_date,
-      country_id,
-      city,
-      category,
-      document_id,
-    });
+  const user = await User.findOneBy({ email: email });
+  if (user) throw Boom.notAcceptable("Email is already taken.");
+  const newUser = User.create({
+    role,
+    first_name,
+    last_name,
+    phone,
+    email,
+    password,
+    username,
+    address,
+    gender,
+    birth_date,
+    country_id,
+    city,
+    category,
+    document_id,
+  });
 
-    await newUser.save();
+  await newUser.save();
 
-    return h.response(newUser).header("Content-Type", "application/json");
-  } catch (err) {
-    console.error(err);
-    return h
-      .response({ message: "Internal server error.", error: err.message })
-      .code(500)
-      .header("Content-Type", "application/json");
-  }
+  return h.response(newUser).header("Content-Type", "application/json");
 };
 
 export const loginHandler = async (
