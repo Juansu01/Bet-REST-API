@@ -1,7 +1,6 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 
-import { checkAccessToken } from "../middlewares/checkAccessToken";
 import {
   createNewTransaction,
   getAllTransactions,
@@ -24,7 +23,11 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
       validate: {
         payload: Joi.object({
           category: Joi.string()
-            .valid("withdraw", "deposit", "winning", "bet")
+            .allow("withdraw", "deposit", "winning", "bet")
+            .messages({
+              "any.only":
+                "Category can only be: withdraw, deposit, winning, bet",
+            })
             .required(),
           amount: Joi.number().min(1).max(200).required(),
           user_id: Joi.number().min(1).required(),
@@ -51,7 +54,11 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
       validate: {
         payload: Joi.object({
           category: Joi.string()
-            .valid("withdraw", "deposit", "winning", "bet")
+            .allow("withdraw", "deposit", "winning", "bet")
+            .messages({
+              "any.only":
+                "Category can only be: withdraw, deposit, winning, bet",
+            })
             .required(),
           amount: Joi.number().min(1).max(200).required(),
           status: Joi.string(),
@@ -87,7 +94,13 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
           id: Joi.number().required(),
         }),
         query: Joi.object({
-          category: Joi.string().valid("withdraw", "deposit", "winning", "bet"),
+          category: Joi.string()
+            .allow("withdraw", "deposit", "winning", "bet")
+            .messages({
+              "any.only":
+                "Category can only be: withdraw, deposit, winning, bet",
+            })
+            .optional(),
         }),
       },
     },
