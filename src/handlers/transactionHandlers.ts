@@ -39,17 +39,13 @@ export const getAllTransactions = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  try {
-    const transactions = await myDataSource.getRepository(Transaction).find({
-      relations: {
-        user: true,
-      },
-    });
+  const allTransactions = await Transaction.find({
+    relations: {
+      user: true,
+    },
+  });
 
-    return h.response(transactions).header("Content-Type", "application/json");
-  } catch (err) {
-    throw Boom.badImplementation(err.message);
-  }
+  return h.response(allTransactions).header("Content-Type", "application/json");
 };
 
 export const depositIntoAccount = async (
