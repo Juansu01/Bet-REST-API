@@ -1,4 +1,5 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
+import Joi from "joi";
 
 import {
   createNewBet,
@@ -42,6 +43,17 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+      validate: {
+        params: Joi.object({
+          id: Joi.number()
+          .positive()
+          .messages({
+            "number.positive":
+              "Id must be positive.",
+          })
+          .required()
+        })
+      }
     },
   },
 ];
