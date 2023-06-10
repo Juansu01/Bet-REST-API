@@ -3,6 +3,8 @@
     "target": "es6",
     "module": "commonjs",
     "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
+    "strict": true,
+    "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
