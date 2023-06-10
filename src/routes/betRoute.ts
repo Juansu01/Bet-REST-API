@@ -44,6 +44,9 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
       validate: {
+        payload: Joi.object({
+          winning_option: Joi.string().required()
+        }),
         params: Joi.object({
           id: Joi.number()
           .positive()
