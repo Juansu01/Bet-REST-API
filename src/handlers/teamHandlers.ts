@@ -21,15 +21,11 @@ export const createNewTeam = async (
 };
 
 export const getAllTeams = async (request: TeamRequest, h: ResponseToolkit) => {
-  try {
-    const teams = await myDataSource.getRepository(Team).find({
-      relations: {
-        match: true,
-      },
-    });
+  const allTeams = await Team.find({
+    relations: {
+      match: true,
+    },
+  });
 
-    return h.response(teams).header("Content-Type", "application/json");
-  } catch (err) {
-    throw Boom.badImplementation(err.message);
-  }
+  return h.response(allTeams).header("Content-Type", "application/json");
 };
