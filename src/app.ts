@@ -2,17 +2,35 @@ import Hapi from "@hapi/hapi";
 import dotenv from "dotenv";
 import basic from "@hapi/basic";
 import Jwt from "@hapi/jwt";
+import Joi from "joi";
+import Boom from "@hapi/boom"
 
 import routes from "./routes";
 import myDataSource from "./services/dbConnection";
 import { basicAuthentication } from "./auth/basicAuth";
 import { validateToken } from "./auth/validateToken";
+import { DefaultError } from "./types/error";
 
 dotenv.config();
 const init = async () => {
   const server = new Hapi.Server({
     port: process.env.PORT,
     host: process.env.HOST,
+    routes: {
+      validate: {
+        failAction(request, h, err) {
+          if (process.env.ENVIRONMENT === "develop") {
+            // Only send back the full error details when in the
+            // development environment, this prevents echo attacks.
+            throw err
+          }
+          // If the environment is any different than the development
+          // environment, the client will get a generic error.
+          const defaultError = err as DefaultError
+          throw Boom.badRequest(defaultError.data.defaultError)
+        }
+      }
+    }
   });
 
   myDataSource
@@ -24,6 +42,7 @@ const init = async () => {
       console.error("Error during Data Source initialization:", err);
     });
 
+  server.validator(Joi);
   await server.register(basic);
   server.auth.strategy("simple", "basic", { validate: basicAuthentication });
   await server.register(Jwt);
