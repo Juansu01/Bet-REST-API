@@ -17,7 +17,7 @@ const developmentServer = async () => {
     routes: {
       validate: {
         failAction(request, h, err) {
-            throw err
+          throw err
         }
       }
     }
