@@ -17,6 +17,12 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+      validate: {
+        payload: Joi.object({
+          match_id: Joi.number().integer().required().min(1),
+          result: Joi.string().allow(null).optional()
+        })
+      }
     },
   },
   {
@@ -34,6 +40,20 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+      validate: {
+        params: Joi.object({
+          id: Joi.number()
+            .positive()
+            .messages({
+              "number.positive":
+                "Id must be positive.",
+            })
+            .required()
+        }),
+        payload: {
+          status: Joi.string().required().allow("active", "cancelled", "settled")
+        }
+      }
     },
   },
   {
@@ -49,12 +69,12 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
         }),
         params: Joi.object({
           id: Joi.number()
-          .positive()
-          .messages({
-            "number.positive":
-              "Id must be positive.",
-          })
-          .required()
+            .positive()
+            .messages({
+              "number.positive":
+                "Id must be positive.",
+            })
+            .required()
         })
       }
     },
