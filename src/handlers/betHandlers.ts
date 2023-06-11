@@ -3,7 +3,6 @@ import Boom from "@hapi/boom";
 
 import { BetRequest } from "../types/bet";
 import { Bet } from "../entities/Bet";
-import myDataSource from "../services/dbConnection";
 import { PlacedBet } from "../entities/PlacedBet";
 import { User } from "../entities/User";
 import { makeTransaction } from "../services/transactionService";
