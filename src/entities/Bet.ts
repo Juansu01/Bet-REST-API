@@ -28,6 +28,7 @@ export class Bet extends BaseClass {
   @Column({
     type: "enum",
     enum: BetStatus,
+    default: "active"
   })
   status: string;
 
