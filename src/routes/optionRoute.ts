@@ -15,7 +15,7 @@ export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
           number: Joi.number().min(1).required(),
           name: Joi.string().required(),
           odd: Joi.number().required(),
-          did_win: Joi.boolean().optional(),
+          did_win: Joi.boolean().optional().allow(null),
           bet_id: Joi.number().min(1).required(),
         }),
       },
