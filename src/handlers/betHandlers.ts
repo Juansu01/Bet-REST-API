@@ -12,8 +12,8 @@ import { Match } from "../entities/Match";
 import { BetStatus } from "../entities/Bet";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
-  const { match_id, status, result } = request.payload;
-  const newBet = Bet.create({ status, match_id, result });
+  const { match_id, result } = request.payload;
+  const newBet = Bet.create({ match_id, result });
 
   await newBet.save();
   return h.response(newBet).header("Content-Type", "application/json");
@@ -45,7 +45,7 @@ export const changeBetStatus = async (
     if (!Object.values(BetStatus).includes(status as BetStatus))
       throw Boom.badRequest(
         `Bet status ${status} is not inside valid statuses ` +
-          "must be: active, cancelled, or settled."
+        "must be: active, cancelled, or settled."
       );
     const previousStatus = bet.status;
     bet.status = status;
