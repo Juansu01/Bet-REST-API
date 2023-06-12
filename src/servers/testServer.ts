@@ -5,7 +5,6 @@ import Jwt from "@hapi/jwt";
 import Joi from "joi";
 
 import routes from "../routes";
-import myDataSource from "../services/dbConnection";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
 
@@ -15,15 +14,6 @@ const testServer = async () => {
     port: process.env.PORT,
     host: process.env.HOST,
   });
-
-  myDataSource
-    .initialize()
-    .then(() => {
-      console.log("Data Source has been initialized!");
-    })
-    .catch((err) => {
-      console.error("Error during Data Source initialization:", err);
-    });
 
   server.validator(Joi);
   await server.register(basic);
@@ -40,6 +30,7 @@ const testServer = async () => {
   });
   server.route(routes);
   await server.start();
+  console.log("You are running the testing server");
   console.log("Server running on %s", server.info.uri);
   return server;
 };
