@@ -4,7 +4,7 @@
   "description": "REST API for PlayGreen selection process",
   "main": "src/app.ts",
   "scripts": {
-    "test": "lab -l ./dist/test/*.test.js",
+    "test": "lab -l --typescript ./test/*.test.ts",
     "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' src/app.ts",
     "serve": "concurrently \"npx tsc -w\" \"nodemon dist/app.js\""
   },

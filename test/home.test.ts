@@ -1,8 +1,8 @@
 import Lab from "@hapi/lab";
 import { expect } from "@hapi/code";
 
-import testServer from "../servers/testServer";
-import { TestServer } from "../types/server";
+import testServer from "../src/servers/testServer";
+import { TestServer } from "../src/types/server";
 
 const { afterEach, beforeEach, describe, it } = (exports.lab = Lab.script());
 
