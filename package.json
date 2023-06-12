@@ -4,7 +4,7 @@
   "description": "REST API for PlayGreen selection process",
   "main": "src/app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "lab -l ./dist/test/*.test.js",
     "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' src/app.ts",
     "serve": "concurrently \"npx tsc -w\" \"nodemon dist/app.js\""
   },
@@ -25,6 +25,8 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@hapi/code": "^9.0.3",
+    "@hapi/lab": "^25.1.2",
     "@types/hapi": "^18.0.8",
     "@types/hapi__basic": "^5.1.3",
     "@types/jsonwebtoken": "^9.0.2",
