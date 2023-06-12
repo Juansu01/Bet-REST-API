@@ -7,8 +7,11 @@ REST API that implements a betting system and performs automatic payments for wi
 - TypeScript
 - TypeORM
 - MySQL
-- JWT
 - Hapi
+- Hapi Lab
+- Joi
+- Hapi JWT
+- Hapi Basic
 
 ## Deployment Details
 
