@@ -40,6 +40,7 @@ const defaultServer = async () => {
   });
   server.route(routes);
   await server.start();
+  console.log("You are running the production server");
   console.log("Server running on %s", server.info.uri);
 };
 
