@@ -5,34 +5,41 @@ import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
 import { TestCredentials, LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
+import generateBasicAuthHeader from "./utils/generateAuthHeader";
 
-const { afterEach, beforeEach, describe, it } = (exports.lab = Lab.script());
+const { after, before, describe, it } = (exports.lab = Lab.script());
+
 describe("Test for log in route.", () => {
-  beforeEach(async () => {
-    server = await testServer();
-  });
-
-  afterEach(async () => {
-    await server.stop();
-    await myDataSource.destroy();
-  });
   let server: TestServer;
-  const validUserCredentials: TestCredentials = {
+  const validUser: TestCredentials = {
     username: "johndoe@example.com",
     password: "password123",
   };
-  const invalidUserCredentials: TestCredentials = {
+  const invalidUser: TestCredentials = {
     username: "johndoeexample(/com",
     password: "notagoodpassword",
   };
 
+  before(async () => {
+    server = await testServer();
+    await myDataSource.initialize();
+  });
+
+  after(async () => {
+    await server.stop();
+    await myDataSource.destroy();
+  });
+
   it("Valid user gets accessToken after logging in", async () => {
+    const authHeader = generateBasicAuthHeader(
+      validUser.username,
+      validUser.password
+    );
     const res = await server.inject({
       method: "post",
       url: "/api/login",
-      auth: {
-        strategy: "simple",
-        credentials: validUserCredentials,
+      headers: {
+        authorization: authHeader,
       },
     });
     expect(res.statusCode).to.equal(200);
@@ -42,12 +49,15 @@ describe("Test for log in route.", () => {
     });
   });
   it("Invalid credentials don't provide access", async () => {
+    const authHeader = generateBasicAuthHeader(
+      invalidUser.username,
+      invalidUser.password
+    );
     const res = await server.inject({
       method: "post",
       url: "/api/login",
-      auth: {
-        strategy: "simple",
-        credentials: invalidUserCredentials,
+      headers: {
+        authorization: authHeader,
       },
     });
     expect(res.statusCode).to.equal(401);
