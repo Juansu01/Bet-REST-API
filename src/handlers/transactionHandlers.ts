@@ -3,7 +3,6 @@ import Boom from "@hapi/boom";
 
 import { TransactionRequest } from "../types/transaction";
 import { Transaction, TransactionCategory } from "../entities/Transaction";
-import myDataSource from "../services/dbConnection";
 import { User } from "../entities/User";
 import { makeTransaction } from "../services/transactionService";
 import { UserCredentials } from "../types/authentication";
@@ -48,7 +47,7 @@ export const getAllTransactions = async (
   return h.response(allTransactions).header("Content-Type", "application/json");
 };
 
-export const depositIntoAccount = async (
+export const makeTransactionByUser = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
