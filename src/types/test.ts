@@ -9,4 +9,5 @@ export interface LogInResponsePayload {
 export interface TestCredentials extends AuthCredentials<UserCredentials> {
   username: string;
   password: string;
+  role?: string;
 }
