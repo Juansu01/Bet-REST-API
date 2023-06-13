@@ -28,19 +28,37 @@ describe("Testing admin access to protected routes.", () => {
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
+
     const adminAuthToken = generateBasicAuthHeader(
       adminCredentials.username,
       adminCredentials.password
     );
-    const res = await server.inject({
+    const userAuthToken = generateBasicAuthHeader(
+      userCredentials.username,
+      userCredentials.password
+    );
+
+    const adminRes = await server.inject({
       method: "post",
       url: "/api/login",
       headers: {
         authorization: adminAuthToken,
       },
     });
-    const adminLogInPayload: LogInResponsePayload = JSON.parse(res.payload);
+    const userRes = await server.inject({
+      method: "post",
+      url: "/api/login",
+      headers: {
+        authorization: userAuthToken,
+      },
+    });
+
+    const adminLogInPayload: LogInResponsePayload = JSON.parse(
+      adminRes.payload
+    );
     adminAccessToken = adminLogInPayload.access_token;
+    const userLogInPayload: LogInResponsePayload = JSON.parse(userRes.payload);
+    userAccessToken = userLogInPayload.access_token;
   });
 
   after(async () => {
@@ -59,5 +77,17 @@ describe("Testing admin access to protected routes.", () => {
     const json = JSON.parse(res.payload);
     expect(Array.isArray(json)).to.equal(true);
     expect(res.statusCode).to.equal(200);
+  });
+  it("User cannot get all transactions", async () => {
+    const res = await server.inject({
+      method: "get",
+      url: "/api/transactions",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({ message: "You are not an admin." });
   });
 });
