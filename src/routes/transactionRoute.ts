@@ -4,7 +4,7 @@ import Joi from "joi";
 import {
   createNewTransaction,
   getAllTransactions,
-  depositIntoAccount,
+  makeTransactionByUser,
   getUserBalance,
   getUserTransactions,
   getUserTransactionsById,
@@ -48,7 +48,7 @@ export const transactionRoutes: ServerRoute<ReqRefDefaults>[] = [
   {
     method: "POST",
     path: "/api/transaction-by-user",
-    handler: depositIntoAccount,
+    handler: makeTransactionByUser,
     options: {
       auth: "jwt",
       validate: {
