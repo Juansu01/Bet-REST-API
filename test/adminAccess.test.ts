@@ -102,6 +102,7 @@ describe("Testing admin access to protected routes.", () => {
     const json = JSON.parse(res.payload);
     expect(res.statusCode).to.equal(200);
     expect(Array.isArray(json)).to.equal(true);
+    expect(json[0]).to.contain(["user_id", "category", "id"]);
     expect(json[0]).to.contain({ user_id: userId });
   });
   it("Admin can get a specific user balance", async () => {
