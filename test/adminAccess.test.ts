@@ -9,6 +9,7 @@ import { TestCredentials } from "../src/types/test";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
+import { Transaction } from "../src/entities/Transaction";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -21,7 +22,7 @@ describe("Testing admin access to protected routes.", () => {
   const userCredentials: TestCredentials = {
     username: "johndoe4@example.com",
     password: "password123",
-    role: "admin",
+    role: "user",
   };
   let adminAccessToken: string;
   let userAccessToken: string;
@@ -106,6 +107,37 @@ describe("Testing admin access to protected routes.", () => {
     expect(Array.isArray(json)).to.equal(true);
     expect(json[0]).to.contain(["user_id", "category", "id"]);
     expect(json[0]).to.contain({ user_id: userId });
+  });
+  it("Admin can get specific user transactions and filter by category", async () => {
+    const category = TransactionCategory.DEPOSIT;
+    const userId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/users/${userId}/transactions?category=${category}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(Array.isArray(json)).to.equal(true);
+    if (Array.isArray(json)) {
+      const transactions = json as Transaction[];
+      if (transactions.length > 0) {
+        expect(transactions[0]).to.contain([
+          "id",
+          "category",
+          "amount",
+          "status",
+        ]);
+        expect(transactions[0].user_id).to.equal(userId);
+      }
+      if (transactions.length > 1) {
+        expect(transactions[0].category).to.equal(category);
+        expect(transactions[0].category).to.equal(transactions[1].category);
+        expect(transactions[0].user_id).to.equal(transactions[1].user_id);
+      }
+    }
   });
   it("Admin can get a specific user balance", async () => {
     const userId = 1;
