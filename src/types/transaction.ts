@@ -2,7 +2,7 @@ import { Request } from "hapi";
 
 import { TransactionCategory } from "../entities/Transaction";
 
-interface TransactionPayload {
+export interface TransactionPayload {
   user_id: number;
   category: TransactionCategory;
   status: string;
