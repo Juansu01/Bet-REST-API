@@ -90,4 +90,31 @@ describe("Testing admin access to protected routes.", () => {
     expect(res.statusCode).to.equal(401);
     expect(json).to.contain({ message: "You are not an admin." });
   });
+  it("Admin can get a specific user transactions", async () => {
+    const userId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/users/${userId}/transactions`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(Array.isArray(json)).to.equal(true);
+    expect(json[0]).to.contain({ user_id: userId });
+  });
+  it("Admin can get a specific user balance", async () => {
+    const userId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/users/${userId}/balance`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(json).to.include(["username", "balance"]);
+  });
 });
