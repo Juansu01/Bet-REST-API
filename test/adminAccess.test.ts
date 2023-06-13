@@ -7,6 +7,8 @@ import { LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import { TestCredentials } from "../src/types/test";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
+import { TransactionPayload } from "../src/types/transaction";
+import { TransactionCategory } from "../src/entities/Transaction";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -117,5 +119,29 @@ describe("Testing admin access to protected routes.", () => {
     const json = JSON.parse(res.payload);
     expect(res.statusCode).to.equal(200);
     expect(json).to.include(["username", "balance"]);
+  });
+  it("Admin can create a new deposit transaction", async () => {
+    const payload: TransactionPayload = {
+      category: TransactionCategory.DEPOSIT,
+      amount: 5,
+      user_id: 1,
+      status: "active",
+    };
+    const res = await server.inject({
+      method: "post",
+      url: "/api/transaction",
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+      payload: payload,
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(json).to.include(["user", "amount"]);
+    expect(json).to.include({
+      amount: payload.amount,
+      category: payload.category,
+      status: "accepted",
+    });
   });
 });
