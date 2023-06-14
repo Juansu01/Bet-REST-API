@@ -3,7 +3,10 @@ import { expect } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
-import { LogInResponsePayload } from "../src/types/test";
+import {
+  LogInResponsePayload,
+  UserBalanceResponsePayload,
+} from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import { TestCredentials } from "../src/types/test";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
@@ -77,4 +80,61 @@ describe("Testing transaction route.", () => {
       }
     }
   });
+  it("User can make a deposit transaction", async () => {
+    const payload: TransactionPayload = {
+      category: TransactionCategory.DEPOSIT,
+      amount: 5,
+    };
+    const res = await server.inject({
+      method: "post",
+      url: "/api/transaction-by-user",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+      payload: payload,
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(json).to.include(["user", "amount"]);
+    expect(json).to.include({
+      amount: payload.amount,
+      category: payload.category,
+      status: "accepted",
+    });
+  });
+  it(
+    "User cannot withdraw an amount that is " +
+      "greater than their current balance",
+    async () => {
+      const userBalanceRes = await server.inject({
+        method: "get",
+        url: "/api/user/balance",
+        headers: {
+          authorization: `Bearer ${userAccessToken}`,
+        },
+      });
+      const userBalancePayload: UserBalanceResponsePayload = JSON.parse(
+        userBalanceRes.payload
+      );
+      const invalidWithdrawAmount = userBalancePayload.balance + 50;
+      const payload: TransactionPayload = {
+        category: TransactionCategory.WITHDRAW,
+        amount: invalidWithdrawAmount,
+      };
+      const res = await server.inject({
+        method: "post",
+        url: "/api/transaction-by-user",
+        headers: {
+          authorization: `Bearer ${userAccessToken}`,
+        },
+        payload: payload,
+      });
+      const json = JSON.parse(res.payload);
+      expect(res.statusCode).to.equal(400);
+      expect(json).to.contain(["error", "message"]);
+      expect(json).to.contain({
+        message: "Cannot withdraw, balance is not enough.",
+      });
+    }
+  );
 });
