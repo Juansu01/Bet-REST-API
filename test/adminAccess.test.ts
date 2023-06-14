@@ -176,4 +176,22 @@ describe("Testing admin access to protected routes.", () => {
       status: "accepted",
     });
   });
+  it("Admin cannot block a user that is already blocked", async () => {
+    const blockedUserId = 22;
+    const res = await server.inject({
+      method: "patch",
+      url: `/api/users/block-user/${blockedUserId}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(400);
+    expect(json).to.contain(["statusCode", "error", "message"]);
+    expect(json).to.contain({
+      statusCode: 400,
+      error: "Bad Request",
+      message: "User is already blocked.",
+    });
+  });
 });
