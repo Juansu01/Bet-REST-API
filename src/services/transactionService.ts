@@ -21,7 +21,7 @@ export const makeTransaction = async (
   }
 
   if (depositType === "withdraw" || depositType === "bet") {
-    if (+user.balance === amount || +user.balance > amount) {
+    if (+user.balance >= amount) {
       user.balance = +user.balance - amount;
       await user.save();
       const newTransaction = Transaction.create({
