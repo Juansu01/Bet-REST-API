@@ -3,9 +3,9 @@ import { Request } from "hapi";
 import { TransactionCategory } from "../entities/Transaction";
 
 export interface TransactionPayload {
-  user_id: number;
+  user_id?: number;
   category: TransactionCategory;
-  status: string;
+  status?: string;
   amount: number;
 }
 
