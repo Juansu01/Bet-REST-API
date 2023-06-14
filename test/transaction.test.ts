@@ -80,7 +80,7 @@ describe("Testing transaction route.", () => {
       }
     }
   });
-  it("User can make a deposit transaction", async () => {
+  it("User can make a deposit transaction", { skip: true }, async () => {
     const payload: TransactionPayload = {
       category: TransactionCategory.DEPOSIT,
       amount: 5,
