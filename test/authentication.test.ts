@@ -19,6 +19,10 @@ describe("Test for log in route.", () => {
     username: "johndoeexample(/com",
     password: "notagoodpassword",
   };
+  const blockedUser: TestCredentials = {
+    username: "blockeduser1@example.com",
+    password: "imblocked123",
+  };
 
   before(async () => {
     server = await testServer();
@@ -61,5 +65,27 @@ describe("Test for log in route.", () => {
       },
     });
     expect(res.statusCode).to.equal(401);
+  });
+  it("Blocked user doesn't get access", async () => {
+    const authHeader = generateBasicAuthHeader(
+      blockedUser.username,
+      blockedUser.password
+    );
+    const res = await server.inject({
+      method: "post",
+      url: "/api/login",
+      headers: {
+        authorization: authHeader,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({
+      statusCode: 401,
+      error: "Unauthorized",
+      message: "User is blocked.",
+    });
+    expect(json).to.not.contain({ message: "Logged in successfully!" });
+    expect(json).to.not.contain("access_token");
   });
 });
