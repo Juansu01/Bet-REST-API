@@ -11,3 +11,8 @@ export interface TestCredentials extends AuthCredentials<UserCredentials> {
   password: string;
   role?: string;
 }
+
+export interface UserBalanceResponsePayload {
+  username: string;
+  balance: number;
+}
