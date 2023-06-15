@@ -18,6 +18,18 @@ export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   return h.response(newBet).header("Content-Type", "application/json");
 };
 
+export const getBetById = async (request: BetRequest, h: ResponseToolkit) => {
+  const { id } = request.params;
+  const bet = await Bet.findOne({
+    where: { id: parseInt(id) },
+    relations: { options: true, match: true },
+  });
+
+  if (bet) return h.response(bet);
+
+  throw Boom.notFound("Bet was not found.");
+};
+
 export const getAllBets = async (request: BetRequest, h: ResponseToolkit) => {
   const allBets = await Bet.find({
     relations: {
@@ -44,7 +56,7 @@ export const changeBetStatus = async (
     if (!Object.values(BetStatus).includes(status as BetStatus))
       throw Boom.badRequest(
         `Bet status ${status} is not inside valid statuses ` +
-        "must be: active, cancelled, or settled."
+          "must be: active, cancelled, or settled."
       );
     const previousStatus = bet.status;
     bet.status = status;
