@@ -10,6 +10,7 @@ import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
 import { Transaction } from "../src/entities/Transaction";
+import { Bet } from "../src/entities/Bet";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -194,4 +195,35 @@ describe("Testing admin access to protected routes.", () => {
       message: "User is already blocked.",
     });
   });
+  it(
+    "Admin cannot set a bet status that is the same " +
+      "as the current bet status.",
+    async () => {
+      const betId = 1;
+      const betRes = await server.inject({
+        method: "get",
+        url: `/api/bets/${betId}`,
+        headers: {
+          authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      const betJson: Bet = JSON.parse(betRes.payload);
+      const betStatus = betJson.status;
+      const statusRes = await server.inject({
+        method: "patch",
+        url: `/api/bets/${betId}`,
+        headers: {
+          authorization: `Bearer ${adminAccessToken}`,
+        },
+        payload: {
+          status: betStatus,
+        },
+      });
+      const json = JSON.parse(statusRes.payload);
+      expect(statusRes.statusCode).to.equal(400);
+      expect(json).to.contain({
+        message: `Bet status is ${betStatus} already.`,
+      });
+    }
+  );
 });
