@@ -4,6 +4,7 @@ import Joi from "joi";
 import {
   createNewBet,
   getAllBets,
+  getBetById,
   changeBetStatus,
   settleBet,
 } from "../handlers/betHandlers";
@@ -20,9 +21,9 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
       validate: {
         payload: Joi.object({
           match_id: Joi.number().integer().required().min(1),
-          result: Joi.string().allow(null).optional()
-        })
-      }
+          result: Joi.string().allow(null).optional(),
+        }),
+      },
     },
   },
   {
@@ -31,6 +32,24 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: getAllBets,
     options: {
       auth: "jwt",
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/bets/{id}",
+    handler: getBetById,
+    options: {
+      auth: "jwt",
+      validate: {
+        params: Joi.object({
+          id: Joi.number()
+            .positive()
+            .messages({
+              "number.positive": "Id must be positive.",
+            })
+            .required(),
+        }),
+      },
     },
   },
   {
@@ -45,15 +64,16 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
           id: Joi.number()
             .positive()
             .messages({
-              "number.positive":
-                "Id must be positive.",
+              "number.positive": "Id must be positive.",
             })
-            .required()
+            .required(),
         }),
         payload: {
-          status: Joi.string().required().allow("active", "cancelled", "settled")
-        }
-      }
+          status: Joi.string()
+            .required()
+            .allow("active", "cancelled", "settled"),
+        },
+      },
     },
   },
   {
@@ -65,18 +85,17 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
       validate: {
         payload: Joi.object({
-          winning_option: Joi.string().required()
+          winning_option: Joi.string().required(),
         }),
         params: Joi.object({
           id: Joi.number()
             .positive()
             .messages({
-              "number.positive":
-                "Id must be positive.",
+              "number.positive": "Id must be positive.",
             })
-            .required()
-        })
-      }
+            .required(),
+        }),
+      },
     },
   },
 ];
