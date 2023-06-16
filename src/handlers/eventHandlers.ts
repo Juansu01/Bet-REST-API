@@ -19,7 +19,13 @@ export const getAllEvents = async (
   request: EventRequest,
   h: ResponseToolkit
 ) => {
-  const events = await myDataSource.getRepository(Event).find();
+  const allEvents = await myDataSource
+    .getRepository(Event)
+    .createQueryBuilder("event")
+    .leftJoinAndSelect("event.matches", "match")
+    .leftJoinAndSelect("match.bets", "bet")
+    .leftJoinAndSelect("bet.options", "option")
+    .getMany();
 
-  return h.response(events).header("Content-Type", "application/json");
+  return h.response(allEvents);
 };
