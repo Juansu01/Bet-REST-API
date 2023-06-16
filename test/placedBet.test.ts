@@ -8,6 +8,7 @@ import myDataSource from "../src/services/dbConnection";
 import { TestCredentials } from "../src/types/test";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { PlacedBetPayload } from "../src/types/placedBet";
+import { PlacedBet } from "../src/entities/PlacedBet";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 describe("Testing placed bet route.", () => {
@@ -65,5 +66,18 @@ describe("Testing placed bet route.", () => {
     expect(json).to.contain({
       message: "Cannot place a bet on a settled bet.",
     });
+  });
+  it("User can get their placed bets", async () => {
+    // The bet with id 1 is settled.
+    const res = await server.inject({
+      method: "get",
+      url: "/api/user/placed-bets",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: PlacedBet[] = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(Array.isArray(json)).to.equal(true);
   });
 });
