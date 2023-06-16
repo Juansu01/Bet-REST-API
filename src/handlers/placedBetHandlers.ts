@@ -69,7 +69,34 @@ export const getAllPlacedBets = async (
     relations: {
       user: true,
     },
+    select: {
+      user: {
+        email: true,
+        username: true,
+        role: true,
+      },
+    },
   });
 
   return h.response(placedBets).header("Content-Type", "application/json");
+};
+
+export const getPlacedBetsByUser = async (
+  request: PlacedBetRequest,
+  h: ResponseToolkit
+) => {
+  const userCredentials = request.auth.credentials as UserCredentials;
+  const placedBetsByUser = await PlacedBet.find({
+    where: { user: { email: userCredentials.email } },
+    relations: { user: true },
+    select: {
+      user: {
+        email: true,
+        username: true,
+        role: true,
+      },
+    },
+  });
+
+  return h.response(placedBetsByUser);
 };
