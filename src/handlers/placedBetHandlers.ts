@@ -100,3 +100,15 @@ export const getPlacedBetsByUser = async (
 
   return h.response(placedBetsByUser);
 };
+
+export const getPlacedBetById = async (
+  request: PlacedBetRequest,
+  h: ResponseToolkit
+) => {
+  const { id } = request.params;
+  const placedBet = await PlacedBet.findOne({ where: { id: parseInt(id) } });
+
+  if (placedBet) return h.response(placedBet);
+
+  throw Boom.notFound("Placed bet was not found.");
+};
