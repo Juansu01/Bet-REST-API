@@ -80,4 +80,20 @@ describe("Testing placed bet route.", () => {
     expect(res.statusCode).to.equal(200);
     expect(Array.isArray(json)).to.equal(true);
   });
+  it("User cannot get placed bet using id", async () => {
+    const placedBetId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/placed-bet/${placedBetId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({
+      error: "Unauthorized",
+      message: "You are not an admin.",
+    });
+  });
 });
