@@ -3,7 +3,6 @@ import Boom from "@hapi/boom";
 
 import { MatchRequest } from "../types/match";
 import { Match } from "../entities/Match";
-import myDataSource from "../services/dbConnection";
 import { Event } from "../entities/Event";
 
 export const createNewMatch = async (
@@ -24,7 +23,7 @@ export const getAllMatches = async (
   request: MatchRequest,
   h: ResponseToolkit
 ) => {
-  const matches = await myDataSource.getRepository(Match).find({
+  const allMatches = await Match.find({
     relations: {
       bets: true,
       teams: true,
@@ -32,5 +31,5 @@ export const getAllMatches = async (
     },
   });
 
-  return h.response(matches).header("Content-Type", "application/json");
+  return h.response(allMatches);
 };
