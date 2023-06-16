@@ -4,6 +4,7 @@ import Joi from "joi";
 import {
   createNewPlacedBet,
   getAllPlacedBets,
+  getPlacedBetById,
   getPlacedBetsByUser,
 } from "../handlers/placedBetHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
@@ -31,6 +32,25 @@ export const placedBetRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/placed-bet/{id}",
+    handler: getPlacedBetById,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+      validate: {
+        params: Joi.object({
+          id: Joi.number()
+            .positive()
+            .messages({
+              "number.positive": "Id must be positive.",
+            })
+            .required(),
+        }),
+      },
     },
   },
   {
