@@ -226,4 +226,16 @@ describe("Testing admin access to protected routes.", () => {
       });
     }
   );
+  it("Admin can get all placed bets", async () => {
+    const res = await server.inject({
+      method: "get",
+      url: "/api/placed-bets",
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(Array.isArray(json)).to.equal(true);
+  });
 });
