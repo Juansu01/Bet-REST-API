@@ -3,15 +3,14 @@ import { expect } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
-import { LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import { TestCredentials } from "../src/types/test";
-import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
 import { Transaction } from "../src/entities/Transaction";
 import { Bet } from "../src/entities/Bet";
 import { Option } from "../src/entities/Option";
+import logUserIn from "./utils/logUserIn";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -21,49 +20,14 @@ describe("Testing admin access to protected routes.", () => {
     password: "password123",
     role: "admin",
   };
-  const userCredentials: TestCredentials = {
-    username: "johndoe4@example.com",
-    password: "password123",
-    role: "user",
-  };
-  let adminAccessToken: string;
-  let userAccessToken: string;
+  let adminAccessToken: string | null;
   let server: TestServer;
 
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
 
-    const adminAuthToken = generateBasicAuthHeader(
-      adminCredentials.username,
-      adminCredentials.password
-    );
-    const userAuthToken = generateBasicAuthHeader(
-      userCredentials.username,
-      userCredentials.password
-    );
-
-    const adminRes = await server.inject({
-      method: "post",
-      url: "/api/login",
-      headers: {
-        authorization: adminAuthToken,
-      },
-    });
-    const userRes = await server.inject({
-      method: "post",
-      url: "/api/login",
-      headers: {
-        authorization: userAuthToken,
-      },
-    });
-
-    const adminLogInPayload: LogInResponsePayload = JSON.parse(
-      adminRes.payload
-    );
-    adminAccessToken = adminLogInPayload.access_token;
-    const userLogInPayload: LogInResponsePayload = JSON.parse(userRes.payload);
-    userAccessToken = userLogInPayload.access_token;
+    adminAccessToken = await logUserIn(adminCredentials, server);
   });
 
   after(async () => {
