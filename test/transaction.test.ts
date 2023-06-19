@@ -137,4 +137,16 @@ describe("Testing transaction route.", () => {
       });
     }
   );
+  it("User cannot get all transactions", async () => {
+    const res = await server.inject({
+      method: "get",
+      url: "/api/transactions",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({ message: "You are not an admin." });
+  });
 });

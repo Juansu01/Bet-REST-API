@@ -83,18 +83,6 @@ describe("Testing admin access to protected routes.", () => {
     expect(Array.isArray(json)).to.equal(true);
     expect(res.statusCode).to.equal(200);
   });
-  it("User cannot get all transactions", async () => {
-    const res = await server.inject({
-      method: "get",
-      url: "/api/transactions",
-      headers: {
-        authorization: `Bearer ${userAccessToken}`,
-      },
-    });
-    const json = JSON.parse(res.payload);
-    expect(res.statusCode).to.equal(401);
-    expect(json).to.contain({ message: "You are not an admin." });
-  });
   it("Admin can get a specific user transactions", async () => {
     const userId = 1;
     const res = await server.inject({
