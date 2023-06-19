@@ -11,6 +11,7 @@ import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
 import { Transaction } from "../src/entities/Transaction";
 import { Bet } from "../src/entities/Bet";
+import { Option } from "../src/entities/Option";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -250,5 +251,17 @@ describe("Testing admin access to protected routes.", () => {
     const json = JSON.parse(res.payload);
     expect(res.statusCode).to.equal(200);
     expect(json).to.contain(["user_id", "bet_id", "bet_option", "amount"]);
+  });
+  it("Admin can get all options", async () => {
+    const res = await server.inject({
+      method: "get",
+      url: "/api/options",
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json: Option[] = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(json[0]).to.contain(["number", "name", "odd", "bets"]);
   });
 });
