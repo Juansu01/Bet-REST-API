@@ -47,7 +47,7 @@ describe("Testing bet route.", () => {
     expect(Array.isArray(json)).to.equal(true);
     expect(json[0]).to.contain(["id", "options", "status", "result"]);
   });
-  it("User can get all bets.", async () => {
+  it("User can get bet by id.", async () => {
     if (willSkip) fail("Wrong user credentials, test automatically failed.");
     const betId = 1;
     const res = await server.inject({
