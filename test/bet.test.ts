@@ -45,6 +45,19 @@ describe("Testing bet route.", () => {
     });
     const json: Bet[] = JSON.parse(res.payload);
     expect(Array.isArray(json)).to.equal(true);
-    expect(json[0]).to.contain(["id", "options", "status"]);
+    expect(json[0]).to.contain(["id", "options", "status", "result"]);
+  });
+  it("User can get all bets.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const betId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/bets/${betId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: Bet = JSON.parse(res.payload);
+    expect(json).to.contain(["id", "options", "status", "result"]);
   });
 });
