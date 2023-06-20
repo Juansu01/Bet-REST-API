@@ -69,9 +69,7 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
             .required(),
         }),
         payload: {
-          status: Joi.string()
-            .required()
-            .allow("active", "cancelled", "settled"),
+          status: Joi.string().required().allow("active", "cancelled"),
         },
       },
     },
