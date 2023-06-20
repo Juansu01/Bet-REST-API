@@ -60,4 +60,22 @@ describe("Testing bet route.", () => {
     const json: Bet = JSON.parse(res.payload);
     expect(json).to.contain(["id", "options", "status", "result"]);
   });
+  it("User cannot change bet status.", async () => {
+    const betId = 1;
+    const statusRes = await server.inject({
+      method: "patch",
+      url: `/api/bets/${betId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+      payload: {
+        status: "cancelled",
+      },
+    });
+    const json = JSON.parse(statusRes.payload);
+    expect(statusRes.statusCode).to.equal(401);
+    expect(json).to.contain({
+      message: "You are not an admin.",
+    });
+  });
 });
