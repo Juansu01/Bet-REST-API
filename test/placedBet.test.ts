@@ -48,9 +48,9 @@ describe("Testing placed bet route.", () => {
   it("User cannot place a bet on a settled bet", async () => {
     // The bet with id 1 is settled.
     const payload: PlacedBetPayload = {
-      bet_option: "Thunder Cats",
+      bet_option: "Fierce Panthers",
       amount: 49,
-      bet_id: 1,
+      bet_id: 2,
     };
     const res = await server.inject({
       method: "post",
@@ -61,6 +61,7 @@ describe("Testing placed bet route.", () => {
       payload: payload,
     });
     const json = JSON.parse(res.payload);
+    console.log(json);
     expect(res.statusCode).to.equal(400);
     expect(json).to.contain(["error", "message", "statusCode"]);
     expect(json).to.contain({
