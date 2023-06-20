@@ -97,7 +97,6 @@ describe("Testing placed bet route.", () => {
     });
   });
   it("User cannot get all placed bets", async () => {
-    const placedBetId = 1;
     const res = await server.inject({
       method: "get",
       url: "/api/placed-bets",
