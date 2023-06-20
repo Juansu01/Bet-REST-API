@@ -9,7 +9,6 @@ import { makeTransaction } from "../services/transactionService";
 import { TransactionCategory } from "../entities/Transaction";
 import { Match } from "../entities/Match";
 import { BetStatus } from "../entities/Bet";
-import { Option } from "../entities/Option";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { match_id, result } = request.payload;
