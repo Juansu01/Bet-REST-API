@@ -9,6 +9,7 @@ import { makeTransaction } from "../services/transactionService";
 import { TransactionCategory } from "../entities/Transaction";
 import { Match } from "../entities/Match";
 import { BetStatus } from "../entities/Bet";
+import { Option } from "../entities/Option";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { match_id, result } = request.payload;
@@ -56,7 +57,7 @@ export const changeBetStatus = async (
     if (!Object.values(BetStatus).includes(status as BetStatus))
       throw Boom.badRequest(
         `Bet status ${status} is not inside valid statuses ` +
-          "must be: active, cancelled, or settled."
+          "must be: active or cancelled"
       );
     const previousStatus = bet.status;
     bet.status = status;
@@ -88,47 +89,46 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
     if (option.name === winning_option) {
       canBeSettled = true;
       option.did_win = true;
-      await option.save();
       odd = option.odd;
+      await option.save();
     }
   });
 
-  if (canBeSettled) {
-    const winningPlacedBets = await PlacedBet.find({
-      where: { bet_option: winning_option, bet_id: betToSettle.id },
-    });
-    if (!winningPlacedBets) {
-      return h.response("There weren't any winning placed bets.");
-    }
-    const winnersList: Object[] = [];
-    winningPlacedBets.forEach(async (placedBet) => {
-      const userToReward = await User.findOne({
-        where: { id: placedBet.user_id },
-      });
-      const amountToAdd = +placedBet.amount * +odd!;
-      console.log(
-        `${userToReward?.email} will be rewarded for ${amountToAdd}!`
-      );
-      await makeTransaction(
-        "winning" as TransactionCategory,
-        userToReward!,
-        amountToAdd
-      );
-      winnersList.push({
-        user_email: userToReward?.email,
-        received_amount: amountToAdd,
-      });
-    });
-    const matchFromBet = await Match.findOneBy({ id: betToSettle.match_id });
-    if (matchFromBet) matchFromBet.winner = winning_option;
-    betToSettle.result = winning_option;
-    betToSettle.status = "settled";
-    await betToSettle.save();
-    return h.response({
-      message: "Successfully settled.",
-      winners: winnersList,
-    });
+  if (!canBeSettled) throw Boom.notFound("Winning option is not inside Bet.");
+
+  const winningPlacedBets = await PlacedBet.find({
+    where: { bet_option: winning_option, bet_id: betToSettle.id },
+  });
+
+  if (!winningPlacedBets) {
+    return h.response("There weren't any winning placed bets.");
   }
 
-  throw Boom.notFound("Winning option is not inside Bet.");
+  const winnersList: Object[] = [];
+  winningPlacedBets.forEach(async (placedBet) => {
+    const userToReward = await User.findOne({
+      where: { id: placedBet.user_id },
+    });
+    if (!userToReward) return;
+    const amountToAdd = +placedBet.amount * +odd!;
+    console.log(`${userToReward.email} will be rewarded for ${amountToAdd}!`);
+    await makeTransaction(
+      "winning" as TransactionCategory,
+      userToReward!,
+      amountToAdd
+    );
+    winnersList.push({
+      user_email: userToReward.email,
+      received_amount: amountToAdd,
+    });
+  });
+  const matchFromBet = await Match.findOneBy({ id: betToSettle.match_id });
+  if (matchFromBet) matchFromBet.winner = winning_option;
+  betToSettle.result = winning_option;
+  betToSettle.status = "settled";
+  await betToSettle.save();
+  return h.response({
+    message: "Successfully settled.",
+    winners: winnersList,
+  });
 };
