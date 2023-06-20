@@ -220,4 +220,20 @@ describe("Testing admin access to protected routes.", () => {
     expect(res.statusCode).to.equal(200);
     expect(json[0]).to.contain(["number", "name", "odd", "bets"]);
   });
+  it("Admin cannot settle bet through change bet status route.", async () => {
+    const betId = 1;
+    const statusToAdd = "setted";
+    const statusRes = await server.inject({
+      method: "patch",
+      url: `/api/bets/${betId}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+      payload: {
+        status: statusToAdd,
+      },
+    });
+    const json = JSON.parse(statusRes.payload);
+    expect(statusRes.statusCode).to.equal(400);
+  });
 });
