@@ -149,4 +149,17 @@ describe("Testing transaction route.", () => {
     expect(res.statusCode).to.equal(401);
     expect(json).to.contain({ message: "You are not an admin." });
   });
+  it("User cannot get a specific user transactions", async () => {
+    const userId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/users/${userId}/transactions`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({ message: "You are not an admin." });
+  });
 });
