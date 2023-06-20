@@ -46,7 +46,7 @@ describe("Testing placed bet route.", () => {
   });
 
   it("User cannot place a bet on a settled bet", async () => {
-    // The bet with id 1 is settled.
+    // The bet with id 2 is settled.
     const payload: PlacedBetPayload = {
       bet_option: "Fierce Panthers",
       amount: 49,
