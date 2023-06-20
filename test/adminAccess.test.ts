@@ -26,8 +26,12 @@ describe("Testing admin access to protected routes.", () => {
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
-
     adminAccessToken = await logUserIn(adminCredentials, server);
+    const table = server.table();
+    console.log("LIST OF ALL ROUTES");
+    table.forEach((route) =>
+      console.log(`${route.method.toUpperCase()} ${route.path}`)
+    );
   });
 
   after(async () => {
