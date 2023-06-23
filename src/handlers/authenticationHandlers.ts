@@ -1,14 +1,19 @@
 import { ResponseToolkit, Request } from "hapi";
+import Boom from "@hapi/boom";
+import Jwt, { HapiJwt } from "@hapi/jwt";
+import dotenv from "dotenv";
 
 import { User } from "../entities/User";
 import {
   RegisterRequest,
   AuthenticationRequest,
   UserCredentials,
+  MyArtifacts,
 } from "../types/authentication";
 import { hapiJWTGenerateToken } from "../services/accessTokenGenerators";
-import Boom from "@hapi/boom";
+import redisClient from "../cache/redisClient";
 
+dotenv.config();
 export const registerHandler = async (
   request: RegisterRequest,
   h: ResponseToolkit
@@ -63,6 +68,9 @@ export const loginHandler = async (
     userCredentials.email,
     userCredentials.role
   );
+  const redisExpiration = 1200; // 20 mins
+
+  await redisClient.setEx(accessToken, redisExpiration, "active");
   return h.response({
     message: "Logged in successfully!",
     access_token: accessToken,
@@ -95,5 +103,19 @@ export const blockUser = async (
 };
 
 export const logoutHandler = async (request: Request, h: ResponseToolkit) => {
-  return h.response("You're logging out.");
+  const secret = process.env.ACCESS_TOKEN_SECRET as string;
+  const artifactsAsMine = request.auth.artifacts as MyArtifacts;
+  const artifactsAsJWT = request.auth
+    .artifacts as HapiJwt.Artifacts<HapiJwt.JwtRefs>;
+
+  try {
+    Jwt.token.verify(artifactsAsJWT, secret);
+    const result = await redisClient.get(artifactsAsMine.token);
+    if (result) redisClient.set(artifactsAsMine.token, "revoked");
+  } catch (err) {
+    console.error(err);
+    return h.response({ message: "Successfully logged out." });
+  }
+
+  return h.response({ message: "Successfully logged out." });
 };
