@@ -8,6 +8,7 @@ import routes from "../routes";
 import myDataSource from "../services/dbConnection";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
+import redisClient from "../cache/redisClient";
 
 dotenv.config();
 const developmentServer = async () => {
@@ -17,10 +18,10 @@ const developmentServer = async () => {
     routes: {
       validate: {
         failAction(request, h, err) {
-          throw err
-        }
-      }
-    }
+          throw err;
+        },
+      },
+    },
   });
 
   myDataSource
@@ -31,6 +32,8 @@ const developmentServer = async () => {
     .catch((err) => {
       console.error("Error during Data Source initialization:", err);
     });
+
+  await redisClient.connect();
 
   server.validator(Joi);
   await server.register(basic);
@@ -47,7 +50,7 @@ const developmentServer = async () => {
   });
   server.route(routes);
   await server.start();
-  console.log("You are running the development server")
+  console.log("You are running the development server");
   console.log("Server running on %s", server.info.uri);
 };
 

@@ -8,6 +8,7 @@ import routes from "../routes";
 import myDataSource from "../services/dbConnection";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
+import redisClient from "../cache/redisClient";
 
 dotenv.config();
 const defaultServer = async () => {
@@ -24,6 +25,8 @@ const defaultServer = async () => {
     .catch((err) => {
       console.error("Error during Data Source initialization:", err);
     });
+
+  await redisClient.connect();
 
   server.validator(Joi);
   await server.register(basic);
