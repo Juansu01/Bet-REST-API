@@ -61,7 +61,6 @@ describe("Testing placed bet route.", () => {
       payload: payload,
     });
     const json = JSON.parse(res.payload);
-    console.log(json);
     expect(res.statusCode).to.equal(400);
     expect(json).to.contain(["error", "message", "statusCode"]);
     expect(json).to.contain({
