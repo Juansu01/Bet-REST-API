@@ -5,6 +5,7 @@ import {
   registerHandler,
   loginHandler,
   blockUser,
+  logoutHandler,
 } from "../handlers/authenticationHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
@@ -45,6 +46,14 @@ export const authenticationRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: loginHandler,
     options: {
       auth: "simple",
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/api/logout",
+    handler: logoutHandler,
+    options: {
+      auth: "jwt",
     },
   },
   {

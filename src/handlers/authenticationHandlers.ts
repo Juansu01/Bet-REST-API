@@ -1,4 +1,4 @@
-import { ResponseToolkit } from "hapi";
+import { ResponseToolkit, Request } from "hapi";
 
 import { User } from "../entities/User";
 import {
@@ -92,4 +92,8 @@ export const blockUser = async (
   }
 
   throw Boom.notFound("User was not found.");
+};
+
+export const logoutHandler = async (request: Request, h: ResponseToolkit) => {
+  return h.response("You're logging out.");
 };
