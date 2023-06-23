@@ -13,6 +13,7 @@ import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
 import { Transaction } from "../src/entities/Transaction";
+import redisClient from "../src/cache/redisClient";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -27,6 +28,7 @@ describe("Testing transaction route.", () => {
 
   before(async () => {
     server = await testServer();
+    await redisClient.connect();
     await myDataSource.initialize();
     const userAuthToken = generateBasicAuthHeader(
       userCredentials.username,
@@ -47,6 +49,7 @@ describe("Testing transaction route.", () => {
 
   after(async () => {
     await server.stop();
+    await redisClient.quit();
     await myDataSource.destroy();
   });
   it("User can get their own balance", async () => {

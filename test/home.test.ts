@@ -6,6 +6,7 @@ import { TestServer } from "../src/types/server";
 import { LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
+import redisClient from "../src/cache/redisClient";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -17,6 +18,7 @@ describe("Test for home route access.", () => {
   const authHeader = generateBasicAuthHeader(username, password);
 
   before(async () => {
+    await redisClient.connect();
     server = await testServer();
     await myDataSource.initialize();
     const res = await server.inject({
@@ -32,6 +34,7 @@ describe("Test for home route access.", () => {
 
   after(async () => {
     await server.stop();
+    await redisClient.quit();
     await myDataSource.destroy();
   });
 

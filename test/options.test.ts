@@ -6,7 +6,7 @@ import { TestServer } from "../src/types/server";
 import myDataSource from "../src/services/dbConnection";
 import { TestCredentials } from "../src/types/test";
 import logUserIn from "./utils/logUserIn";
-import { Option } from "../src/entities/Option";
+import redisClient from "../src/cache/redisClient";
 
 const lab = Lab.script();
 const { describe, it, before, after } = lab;
@@ -25,12 +25,14 @@ describe("Testing option route.", () => {
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
+    await redisClient.connect();
     userAccessToken = await logUserIn(userCredentials, server);
     if (userAccessToken === null) willSkip = true;
   });
 
   after(async () => {
     await server.stop();
+    await redisClient.quit();
     await myDataSource.destroy();
   });
 

@@ -11,6 +11,7 @@ import { Transaction } from "../src/entities/Transaction";
 import { Bet } from "../src/entities/Bet";
 import { Option } from "../src/entities/Option";
 import logUserIn from "./utils/logUserIn";
+import redisClient from "../src/cache/redisClient";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
@@ -26,6 +27,7 @@ describe("Testing admin access to protected routes.", () => {
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
+    await redisClient.connect();
     adminAccessToken = await logUserIn(adminCredentials, server);
     const table = server.table();
     console.log("LIST OF ALL ROUTES");
@@ -36,6 +38,7 @@ describe("Testing admin access to protected routes.", () => {
 
   after(async () => {
     await server.stop();
+    await redisClient.quit();
     await myDataSource.destroy();
   });
 

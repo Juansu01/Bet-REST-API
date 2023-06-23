@@ -7,6 +7,7 @@ import { TestCredentials, LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import logUserIn from "./utils/logUserIn";
+import redisClient from "../src/cache/redisClient";
 
 const { after, before, describe, it } = (exports.lab = Lab.script());
 
@@ -27,11 +28,13 @@ describe("Test for log in route.", () => {
 
   before(async () => {
     server = await testServer();
+    await redisClient.connect();
     await myDataSource.initialize();
   });
 
   after(async () => {
     await server.stop();
+    await redisClient.quit();
     await myDataSource.destroy();
   });
 

@@ -9,6 +9,7 @@ import { TestCredentials } from "../src/types/test";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { PlacedBetPayload } from "../src/types/placedBet";
 import { PlacedBet } from "../src/entities/PlacedBet";
+import redisClient from "../src/cache/redisClient";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 describe("Testing placed bet route.", () => {
@@ -23,6 +24,7 @@ describe("Testing placed bet route.", () => {
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
+    await redisClient.connect();
     const userAuthToken = generateBasicAuthHeader(
       userCredentials.username,
       userCredentials.password
@@ -42,6 +44,7 @@ describe("Testing placed bet route.", () => {
 
   after(async () => {
     await server.stop();
+    await redisClient.quit();
     await myDataSource.destroy();
   });
 
