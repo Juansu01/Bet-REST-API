@@ -7,7 +7,6 @@ import Joi from "joi";
 import routes from "../routes";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
-import redisClient from "src/cache/redisClient";
 
 dotenv.config();
 const testServer = async () => {
@@ -15,8 +14,6 @@ const testServer = async () => {
     port: process.env.PORT,
     host: process.env.HOST,
   });
-
-  await redisClient.connect();
 
   server.validator(Joi);
   await server.register(basic);
