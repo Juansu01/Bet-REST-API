@@ -77,4 +77,18 @@ describe("Testing match route.", () => {
       "bets",
     ]);
   });
+  it("User cannot get a match that doesnt exist.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const nonexistentMatchId = 500;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/matches/${nonexistentMatchId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(404);
+    expect(json).to.contain({ message: "Match was not found." });
+  });
 });
