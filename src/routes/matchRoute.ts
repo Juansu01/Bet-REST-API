@@ -6,6 +6,7 @@ import {
   getAllMatches,
   getMatchById,
   deleteMatchById,
+  getDeletedMatches,
 } from "../handlers/matchHandler";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
@@ -48,6 +49,15 @@ export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "DELETE",
     path: "/api/matches/{id}",
     handler: deleteMatchById,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/deleted-matches",
+    handler: getDeletedMatches,
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
