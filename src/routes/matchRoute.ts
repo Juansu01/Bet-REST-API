@@ -1,7 +1,11 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 
-import { createNewMatch, getAllMatches } from "../handlers/matchHandler";
+import {
+  createNewMatch,
+  getAllMatches,
+  getMatchById,
+} from "../handlers/matchHandler";
 
 export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
   {
@@ -13,13 +17,10 @@ export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
       validate: {
         payload: Joi.object({
           date: Joi.date().required(),
-          event_id: Joi.number()
-            .integer()
-            .required()
-            .messages({
-              "any.required": "Must include event id.",
-              "number.base": "Event id must be an integer.",
-            }),
+          event_id: Joi.number().integer().required().messages({
+            "any.required": "Must include event id.",
+            "number.base": "Event id must be an integer.",
+          }),
           winner: Joi.string().optional(),
         }),
       },
@@ -29,6 +30,14 @@ export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "GET",
     path: "/api/matches",
     handler: getAllMatches,
+    options: {
+      auth: "jwt",
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/matches/{id}",
+    handler: getMatchById,
     options: {
       auth: "jwt",
     },
