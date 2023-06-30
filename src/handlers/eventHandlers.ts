@@ -3,6 +3,7 @@ import { ResponseToolkit } from "hapi";
 import { EventRequest } from "../types/event";
 import { Event } from "../entities/Event";
 import myDataSource from "../services/dbConnection";
+import Boom from "@hapi/boom";
 
 export const createNewEvent = async (
   request: EventRequest,
@@ -28,4 +29,23 @@ export const getAllEvents = async (
     .getMany();
 
   return h.response(allEvents);
+};
+
+export const getEventById = async (
+  request: EventRequest,
+  h: ResponseToolkit
+) => {
+  const eventId = request.params.id;
+  const event = await myDataSource
+    .getRepository(Event)
+    .createQueryBuilder("event")
+    .where({ id: parseInt(eventId) })
+    .leftJoinAndSelect("event.matches", "match")
+    .leftJoinAndSelect("match.bets", "bet")
+    .leftJoinAndSelect("bet.options", "option")
+    .getOne();
+
+  if (event) return h.response(event);
+
+  throw Boom.notFound("Event was not found.");
 };
