@@ -54,3 +54,23 @@ export const getMatchById = async (
 
   throw Boom.notFound("Match was not found.");
 };
+
+export const deleteMatchById = async (
+  request: MatchRequest,
+  h: ResponseToolkit
+) => {
+  const matchId = request.params.id;
+  const match = await Match.findOne({
+    where: {
+      id: parseInt(matchId),
+    },
+    relations: {},
+  });
+
+  if (match) {
+    await Match.softRemove(match);
+    return h.response({ message: "Match successfully deleted." });
+  }
+
+  throw Boom.notFound("Match was not found, cannot delete.");
+};
