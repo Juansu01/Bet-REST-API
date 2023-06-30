@@ -74,3 +74,22 @@ export const deleteMatchById = async (
 
   throw Boom.notFound("Match was not found, cannot delete.");
 };
+
+export const getDeletedMatches = async (
+  request: MatchRequest,
+  h: ResponseToolkit
+) => {
+  const deletedMatches = await Match.find({
+    withDeleted: true,
+    relations: {
+      bets: true,
+      teams: true,
+    },
+    select: {
+      id: true,
+      deleted_at: true,
+    },
+  });
+
+  return h.response(deletedMatches);
+};
