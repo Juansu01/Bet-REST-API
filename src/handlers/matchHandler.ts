@@ -33,3 +33,24 @@ export const getAllMatches = async (
 
   return h.response(allMatches);
 };
+
+export const getMatchById = async (
+  request: MatchRequest,
+  h: ResponseToolkit
+) => {
+  const matchId = request.params.id;
+  const match = await Match.findOne({
+    where: {
+      id: parseInt(matchId),
+    },
+    relations: {
+      bets: true,
+      teams: true,
+      event: true,
+    },
+  });
+
+  if (match) return h.response(match);
+
+  throw Boom.notFound("Match was not found.");
+};
