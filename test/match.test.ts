@@ -57,4 +57,24 @@ describe("Testing match route.", () => {
       "bets",
     ]);
   });
+  it("User can get a match by id.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const matchId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/matches/${matchId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: Match = JSON.parse(res.payload);
+    expect(json).to.contain([
+      "id",
+      "date",
+      "winner",
+      "event_id",
+      "event",
+      "bets",
+    ]);
+  });
 });
