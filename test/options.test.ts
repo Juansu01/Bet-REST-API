@@ -108,4 +108,22 @@ describe("Testing option route.", () => {
     expect(json).to.contain(["id", "number", "name", "did_win"]);
     expect(Array.isArray(json.bets)).to.equal(true);
   });
+  it("User cannot get specific option by id.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const optionId = 5;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/options/${optionId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({
+      statusCode: 401,
+      error: "Unauthorized",
+      message: "You are not an admin.",
+    });
+  });
 });
