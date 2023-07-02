@@ -7,6 +7,7 @@ import myDataSource from "../src/services/dbConnection";
 import { TestCredentials } from "../src/types/test";
 import logUserIn from "./utils/logUserIn";
 import redisClient from "../src/cache/redisClient";
+import { Option } from "../src/entities/Option";
 
 const lab = Lab.script();
 const { describe, it, before, after } = lab;
@@ -52,5 +53,21 @@ describe("Testing option route.", () => {
       error: "Unauthorized",
       message: "You are not an admin.",
     });
+  });
+  it("User can get all options from specific bet.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const betId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/bet/${betId}/options`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: Option[] = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(Array.isArray(json)).to.equal(true);
+    expect(json[0]).to.contain(["id", "number", "name", "did_win"]);
+    expect(Array.isArray(json[0].bets)).to.equal(true);
   });
 });
