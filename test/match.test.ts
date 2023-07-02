@@ -59,7 +59,7 @@ describe("Testing match route.", () => {
   });
   it("User can get a match by id.", async () => {
     if (willSkip) fail("Wrong user credentials, test automatically failed.");
-    const matchId = 1;
+    const matchId = 2;
     const res = await server.inject({
       method: "get",
       url: `/api/matches/${matchId}`,
