@@ -35,6 +35,24 @@ export const getAllOptions = async (
   return h.response(allOptions).header("Content-Type", "application/json");
 };
 
+export const getOptionById = async (
+  request: OptionRequest,
+  h: ResponseToolkit
+) => {
+  const id = request.params.id;
+  const option = await Option.findOne({
+    where: {
+      id: parseInt(id),
+    },
+    relations: {
+      bets: true,
+    },
+  });
+  if (option) return h.response(option);
+
+  throw Boom.notFound("Option was not found.");
+};
+
 export const getOptionsFromBet = async (
   request: OptionRequest,
   h: ResponseToolkit
