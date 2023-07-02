@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 import { AuthenticationRequest } from "src/types/authentication";
 import { DecodedToken } from "../types/authentication";
-import isTokenRevoked from "../cache/checkTokenStatus";
+import checkTokenStatus from "../cache/checkTokenStatus";
 
 dotenv.config();
 export const validateToken = async (
@@ -13,7 +13,7 @@ export const validateToken = async (
   h: ResponseToolkit
 ) => {
   const secret = process.env.ACCESS_TOKEN_SECRET as string;
-  const isAccessTokenRevoked = await isTokenRevoked(artifacts.token);
+  const isAccessTokenRevoked = await checkTokenStatus(artifacts.token);
 
   if (isAccessTokenRevoked) return { isValid: false };
 
