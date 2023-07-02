@@ -19,6 +19,12 @@ describe("Testing option route.", () => {
     password: "password123",
     role: "user",
   };
+  const adminCredentials: TestCredentials = {
+    username: "johndoe@example.com",
+    password: "password123",
+    role: "admin",
+  };
+  let adminAccessToken: string | null;
   let userAccessToken: string | null;
   let server: TestServer;
   let willSkip = false;
@@ -28,6 +34,7 @@ describe("Testing option route.", () => {
     await myDataSource.initialize();
     await redisClient.connect();
     userAccessToken = await logUserIn(userCredentials, server);
+    adminAccessToken = await logUserIn(adminCredentials, server);
     if (userAccessToken === null) willSkip = true;
   });
 
@@ -62,6 +69,22 @@ describe("Testing option route.", () => {
       url: `/api/bet/${betId}/options`,
       headers: {
         authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: Option[] = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(Array.isArray(json)).to.equal(true);
+    expect(json[0]).to.contain(["id", "number", "name", "did_win"]);
+    expect(Array.isArray(json[0].bets)).to.equal(true);
+  });
+  it("Admin can get all options from specific bet.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const betId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/bet/${betId}/options`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
       },
     });
     const json: Option[] = JSON.parse(res.payload);
