@@ -19,6 +19,12 @@ describe("Testing match route.", () => {
     password: "password123",
     role: "user",
   };
+  const adminCredentials: TestCredentials = {
+    username: "johndoe@example.com",
+    password: "password123",
+    role: "admin",
+  };
+  let adminAccessToken: string | null;
   let userAccessToken: string | null;
   let server: TestServer;
   let willSkip = false;
@@ -28,7 +34,8 @@ describe("Testing match route.", () => {
     await myDataSource.initialize();
     await redisClient.connect();
     userAccessToken = await logUserIn(userCredentials, server);
-    if (userAccessToken === null) willSkip = true;
+    adminAccessToken = await logUserIn(adminCredentials, server);
+    if (!userAccessToken || !adminAccessToken) willSkip = true;
   });
 
   after(async () => {
@@ -90,5 +97,18 @@ describe("Testing match route.", () => {
     const json = JSON.parse(res.payload);
     expect(res.statusCode).to.equal(404);
     expect(json).to.contain({ message: "Match was not found." });
+  });
+  it("Admin can get all deleted matches.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const res = await server.inject({
+      method: "get",
+      url: "/api/deleted-matches",
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json: Match[] = JSON.parse(res.payload);
+    expect(Array.isArray(json)).to.equal(true);
+    if (json.length > 0) expect(json[0]).to.contain(["id", "deleted_at"]);
   });
 });
