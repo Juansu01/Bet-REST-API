@@ -126,4 +126,22 @@ describe("Testing option route.", () => {
       message: "You are not an admin.",
     });
   });
+  it("Sending id of option that doesnt exist returns an 404 error", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const nonexistentOptionId = 888;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/options/${nonexistentOptionId}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(404);
+    expect(json).to.contain({
+      statusCode: 404,
+      error: "Not Found",
+      message: "Option was not found.",
+    });
+  });
 });
