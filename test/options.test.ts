@@ -93,4 +93,19 @@ describe("Testing option route.", () => {
     expect(json[0]).to.contain(["id", "number", "name", "did_win"]);
     expect(Array.isArray(json[0].bets)).to.equal(true);
   });
+  it("Admin can get specific option by id.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const optionId = 5;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/options/${optionId}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json: Option = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(json).to.contain(["id", "number", "name", "did_win"]);
+    expect(Array.isArray(json.bets)).to.equal(true);
+  });
 });
