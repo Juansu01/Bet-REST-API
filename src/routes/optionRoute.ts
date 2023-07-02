@@ -1,7 +1,11 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 
-import { createNewOption, getAllOptions } from "../handlers/optionHandlers";
+import {
+  createNewOption,
+  getAllOptions,
+  getOptionsFromBet,
+} from "../handlers/optionHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
 export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -30,6 +34,19 @@ export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/bet/{id}/options",
+    handler: getOptionsFromBet,
+    options: {
+      auth: "jwt",
+      validate: {
+        params: Joi.object({
+          id: Joi.number().integer().positive().required(),
+        }),
+      },
     },
   },
 ];
