@@ -111,4 +111,18 @@ describe("Testing match route.", () => {
     expect(Array.isArray(json)).to.equal(true);
     if (json.length > 0) expect(json[0]).to.contain(["id", "deleted_at"]);
   });
+  it("User cannot get all deleted matches.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const res = await server.inject({
+      method: "get",
+      url: "/api/deleted-matches",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain(["message", "statusCode", "error"]);
+    expect(json).to.contain({ message: "You are not an admin." });
+  });
 });
