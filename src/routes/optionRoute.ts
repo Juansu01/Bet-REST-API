@@ -4,6 +4,7 @@ import Joi from "joi";
 import {
   createNewOption,
   getAllOptions,
+  getOptionById,
   getOptionsFromBet,
 } from "../handlers/optionHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
@@ -34,6 +35,20 @@ export const optionRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/options/{id}",
+    handler: getOptionById,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+      validate: {
+        params: Joi.object({
+          id: Joi.number().integer().positive().required(),
+        }),
+      },
     },
   },
   {
