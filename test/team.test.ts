@@ -100,4 +100,19 @@ describe("Testing match route.", () => {
     expect(res.statusCode).to.equal(200);
     expect(json).to.contain(["match", "match_id", "name"]);
   });
+  it("Trying to get a team that doesn't exist returns 404 error.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const nonexistentTeamId = 900;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/teams/${nonexistentTeamId}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json: Team = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(404);
+    expect(json).to.contain(["error", "message", "statusCode"]);
+    expect(json).to.contain({ message: "Team was not found." });
+  });
 });
