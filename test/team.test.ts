@@ -130,4 +130,19 @@ describe("Testing match route.", () => {
     expect(json).to.contain(["error", "message", "statusCode"]);
     expect(json).to.contain({ message: "You are not an admin." });
   });
+  it("Admin cannot delete a team that doesn't exist.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const nonexistentTeamId = 900;
+    const res = await server.inject({
+      method: "delete",
+      url: `/api/teams/${nonexistentTeamId}`,
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(404);
+    expect(json).to.contain(["error", "message", "statusCode"]);
+    expect(json).to.contain({ message: "Team was not found, cannot delete." });
+  });
 });
