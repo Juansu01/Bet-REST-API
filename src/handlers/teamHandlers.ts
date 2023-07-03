@@ -3,7 +3,6 @@ import Boom from "@hapi/boom";
 
 import { TeamRequest } from "../types/team";
 import { Team } from "../entities/Team";
-import myDataSource from "../services/dbConnection";
 import { Match } from "../entities/Match";
 
 export const createNewTeam = async (
@@ -28,4 +27,20 @@ export const getAllTeams = async (request: TeamRequest, h: ResponseToolkit) => {
   });
 
   return h.response(allTeams).header("Content-Type", "application/json");
+};
+
+export const getTeamById = async (request: TeamRequest, h: ResponseToolkit) => {
+  const teamId = request.params.id;
+  const team = await Team.findOne({
+    where: {
+      id: parseInt(teamId),
+    },
+    relations: {
+      match: true,
+    },
+  });
+
+  if (team) return h.response(team);
+
+  throw Boom.notFound("Team was not found.");
 };
