@@ -72,4 +72,18 @@ describe("Testing match route.", () => {
     expect(Array.isArray(json)).to.equal(true);
     expect(json[0]).to.contain(["match", "match_id", "name"]);
   });
+  it("User can get a specific team by id.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const teamId = 1;
+    const res = await server.inject({
+      method: "get",
+      url: `/api/teams/${teamId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: Team = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(200);
+    expect(json).to.contain(["match", "match_id", "name"]);
+  });
 });
