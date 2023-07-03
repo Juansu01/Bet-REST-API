@@ -46,5 +46,15 @@ describe("Testing match route.", () => {
 
   it("User can get all teams.", async () => {
     if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const res = await server.inject({
+      method: "get",
+      url: "/api/teams",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json: Team[] = JSON.parse(res.payload);
+    expect(Array.isArray(json)).to.equal(true);
+    expect(json[0]).to.contain(["match", "match_id", "name"]);
   });
 });
