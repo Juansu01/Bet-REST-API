@@ -1,7 +1,11 @@
 import { ReqRefDefaults, ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 
-import { createNewTeam, getAllTeams } from "../handlers/teamHandlers";
+import {
+  createNewTeam,
+  getAllTeams,
+  getTeamById,
+} from "../handlers/teamHandlers";
 
 export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
   {
@@ -24,6 +28,19 @@ export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: getAllTeams,
     options: {
       auth: "jwt",
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/teams/{id}",
+    handler: getTeamById,
+    options: {
+      auth: "jwt",
+      validate: {
+        params: Joi.object({
+          id: Joi.number().integer().positive().required(),
+        }),
+      },
     },
   },
 ];
