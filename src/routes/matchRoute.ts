@@ -66,11 +66,6 @@ export const matchRoutes: ServerRoute<ReqRefDefaults>[] = [
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
-      validate: {
-        params: Joi.object({
-          id: Joi.number().integer().positive().required(),
-        }),
-      },
     },
   },
 ];
