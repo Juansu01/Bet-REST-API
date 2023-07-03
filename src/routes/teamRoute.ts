@@ -7,7 +7,7 @@ import {
   getTeamById,
   deleteTeamById,
 } from "../handlers/teamHandlers";
-import { checkAdminPermissions } from "src/middlewares/checkAdminPermission";
+import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
 export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
   {
