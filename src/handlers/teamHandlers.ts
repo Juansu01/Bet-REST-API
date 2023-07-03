@@ -44,3 +44,22 @@ export const getTeamById = async (request: TeamRequest, h: ResponseToolkit) => {
 
   throw Boom.notFound("Team was not found.");
 };
+
+export const deleteTeamById = async (
+  request: TeamRequest,
+  h: ResponseToolkit
+) => {
+  const teamId = request.params.id;
+  const team = await Team.findOne({
+    where: {
+      id: parseInt(teamId),
+    },
+  });
+
+  if (team) {
+    await Team.softRemove(team);
+    return h.response({ message: "Team successfully deleted." });
+  }
+
+  throw Boom.notFound("Team was not found, cannot delete.");
+};
