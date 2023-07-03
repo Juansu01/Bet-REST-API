@@ -5,7 +5,9 @@ import {
   createNewTeam,
   getAllTeams,
   getTeamById,
+  deleteTeamById,
 } from "../handlers/teamHandlers";
+import { checkAdminPermissions } from "src/middlewares/checkAdminPermission";
 
 export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
   {
@@ -36,6 +38,20 @@ export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: getTeamById,
     options: {
       auth: "jwt",
+      validate: {
+        params: Joi.object({
+          id: Joi.number().integer().positive().required(),
+        }),
+      },
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/api/teams/{id}",
+    handler: deleteTeamById,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
       validate: {
         params: Joi.object({
           id: Joi.number().integer().positive().required(),
