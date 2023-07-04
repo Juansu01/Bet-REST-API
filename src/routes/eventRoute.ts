@@ -56,6 +56,7 @@ export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: deleteEventById,
     options: {
       auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
       validate: {
         params: Joi.object({
           id: Joi.number()
