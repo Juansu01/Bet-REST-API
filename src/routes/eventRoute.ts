@@ -7,6 +7,7 @@ import {
   getAllEvents,
   getEventById,
   deleteEventById,
+  getAllDeletedEvents,
 } from "../handlers/eventHandlers";
 
 export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -27,6 +28,15 @@ export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "GET",
     path: "/api/events",
     handler: getAllEvents,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/deleted-events",
+    handler: getAllDeletedEvents,
     options: {
       auth: "jwt",
       pre: [{ method: checkAdminPermissions, assign: "checkAdminPermissions" }],
