@@ -76,3 +76,20 @@ export const deleteEventById = async (
 
   throw Boom.notFound("Event wasn't found.");
 };
+
+export const getAllDeletedEvents = async (
+  request: EventRequest,
+  h: ResponseToolkit
+) => {
+  const allEvents = await myDataSource
+    .getRepository(Event)
+    .createQueryBuilder("event")
+    .withDeleted()
+    .leftJoinAndSelect("event.matches", "match")
+    .leftJoinAndSelect("match.bets", "bet")
+    .leftJoinAndSelect("bet.options", "option")
+    .addSelect("event.deleted_at")
+    .getMany();
+
+  return h.response(allEvents);
+};
