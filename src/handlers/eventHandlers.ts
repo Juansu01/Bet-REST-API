@@ -49,3 +49,30 @@ export const getEventById = async (
 
   throw Boom.notFound("Event was not found.");
 };
+
+export const deleteEventById = async (
+  request: EventRequest,
+  h: ResponseToolkit
+) => {
+  const eventId = request.params.id;
+  const event = await myDataSource
+    .getRepository(Event)
+    .createQueryBuilder("event")
+    .withDeleted()
+    .where({ id: parseInt(eventId) })
+    .leftJoinAndSelect("event.matches", "match")
+    .leftJoinAndSelect("match.bets", "bet")
+    .leftJoinAndSelect("bet.options", "option")
+    .addSelect("event.deleted_at")
+    .getOne();
+
+  if (event && event.deleted_at)
+    throw Boom.notAcceptable("Event is already deleted.");
+
+  if (event && !event.deleted_at) {
+    await event.softRemove();
+    return h.response("Event successfully deleted.");
+  }
+
+  throw Boom.notFound("Event wasn't found.");
+};
