@@ -6,6 +6,7 @@ import {
   createNewEvent,
   getAllEvents,
   getEventById,
+  deleteEventById,
 } from "../handlers/eventHandlers";
 
 export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
@@ -35,6 +36,24 @@ export const eventRoutes: ServerRoute<ReqRefDefaults>[] = [
     method: "GET",
     path: "/api/events/{id}",
     handler: getEventById,
+    options: {
+      auth: "jwt",
+      validate: {
+        params: Joi.object({
+          id: Joi.number()
+            .positive()
+            .messages({
+              "number.positive": "Id must be positive.",
+            })
+            .required(),
+        }),
+      },
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/api/events/{id}",
+    handler: deleteEventById,
     options: {
       auth: "jwt",
       validate: {
