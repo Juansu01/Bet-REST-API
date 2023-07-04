@@ -19,6 +19,12 @@ describe("Testing match route.", () => {
     password: "password123",
     role: "user",
   };
+  const adminCredentials: TestCredentials = {
+    username: "johndoe@example.com",
+    password: "password123",
+    role: "admin",
+  };
+  let adminAccessToken: string | null;
   let userAccessToken: string | null;
   let server: TestServer;
   let willSkip = false;
@@ -28,7 +34,8 @@ describe("Testing match route.", () => {
     await myDataSource.initialize();
     await redisClient.connect();
     userAccessToken = await logUserIn(userCredentials, server);
-    if (userAccessToken === null) willSkip = true;
+    adminAccessToken = await logUserIn(adminCredentials, server);
+    if (!userAccessToken || !adminAccessToken) willSkip = true;
   });
 
   after(async () => {
