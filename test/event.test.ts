@@ -73,4 +73,21 @@ describe("Testing match route.", () => {
     if (json.length > 0)
       expect(json[0]).to.contain(["id", "sport", "matches", "deleted_at"]);
   });
+  it("User cannot get all deleted events.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const res = await server.inject({
+      method: "get",
+      url: "/api/deleted-events",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain({
+      message: "You are not an admin.",
+      statusCode: 401,
+      error: "Unauthorized",
+    });
+  });
 });
