@@ -58,4 +58,19 @@ describe("Testing match route.", () => {
     expect(res.statusCode).to.equal(200);
     if (json.length > 0) expect(json[0]).to.contain(["id", "sport", "matches"]);
   });
+  it("Admin can get all deleted events.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const res = await server.inject({
+      method: "get",
+      url: "/api/deleted-events",
+      headers: {
+        authorization: `Bearer ${adminAccessToken}`,
+      },
+    });
+    const json: Event[] = JSON.parse(res.payload);
+    expect(Array.isArray(json)).to.equal(true);
+    expect(res.statusCode).to.equal(200);
+    if (json.length > 0)
+      expect(json[0]).to.contain(["id", "sport", "matches", "deleted_at"]);
+  });
 });
