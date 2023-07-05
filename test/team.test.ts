@@ -159,4 +159,18 @@ describe("Testing match route.", () => {
     if (json.length > 0)
       expect(json[0]).to.contain(["deleted_at", "name", "match"]);
   });
+  it("User cannot get all deleted teams.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    const res = await server.inject({
+      method: "get",
+      url: "/api/deleted-teams",
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+    });
+    const json = JSON.parse(res.payload);
+    expect(res.statusCode).to.equal(401);
+    expect(json).to.contain(["error", "message", "statusCode"]);
+    expect(json).to.contain({ message: "You are not an admin." });
+  });
 });
