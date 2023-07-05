@@ -6,6 +6,7 @@ import {
   getAllTeams,
   getTeamById,
   deleteTeamById,
+  getAllDeletedTeams,
 } from "../handlers/teamHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
@@ -57,6 +58,15 @@ export const teamRoutes: ServerRoute<ReqRefDefaults>[] = [
           id: Joi.number().integer().positive().required(),
         }),
       },
+    },
+  },
+  {
+    method: "GET",
+    path: "/api/deleted-teams",
+    handler: getAllDeletedTeams,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
     },
   },
 ];
