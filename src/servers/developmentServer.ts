@@ -41,6 +41,8 @@ const developmentServer = async () => {
     options: {
       enabled: true,
       namespace: "hapi-rate-limitor",
+      max: 60, // a maximum of 60 requests
+      duration: 60 * 1000, // per minute (the value is in milliseconds)
     },
   });
 
