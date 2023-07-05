@@ -1,5 +1,6 @@
 import { ResponseToolkit } from "hapi";
 import Boom from "@hapi/boom";
+import { IsNull, Not } from "typeorm";
 
 import { TeamRequest } from "../types/team";
 import { Team } from "../entities/Team";
@@ -62,4 +63,25 @@ export const deleteTeamById = async (
   }
 
   throw Boom.notFound("Team was not found, cannot delete.");
+};
+
+export const getAllDeletedTeams = async (
+  request: TeamRequest,
+  h: ResponseToolkit
+) => {
+  const allDeletedTeams = await Team.find({
+    where: {
+      deleted_at: Not(IsNull()),
+    },
+    relations: {
+      match: true,
+    },
+    withDeleted: true,
+    select: {
+      name: true,
+      deleted_at: true,
+    },
+  });
+
+  return h.response(allDeletedTeams);
 };
