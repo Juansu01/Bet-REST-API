@@ -74,7 +74,7 @@ describe("Testing match route.", () => {
   });
   it("User can get a specific team by id.", async () => {
     if (willSkip) fail("Wrong user credentials, test automatically failed.");
-    const teamId = 1;
+    const teamId = 2;
     const res = await server.inject({
       method: "get",
       url: `/api/teams/${teamId}`,
@@ -88,7 +88,7 @@ describe("Testing match route.", () => {
   });
   it("Admin can get a specific team by id.", async () => {
     if (willSkip) fail("Wrong user credentials, test automatically failed.");
-    const teamId = 1;
+    const teamId = 2;
     const res = await server.inject({
       method: "get",
       url: `/api/teams/${teamId}`,
