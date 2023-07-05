@@ -78,6 +78,7 @@ export const getAllDeletedTeams = async (
     },
     withDeleted: true,
     select: {
+      id: true,
       name: true,
       deleted_at: true,
     },
