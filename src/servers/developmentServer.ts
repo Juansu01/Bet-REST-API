@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import basic from "@hapi/basic";
 import Jwt from "@hapi/jwt";
 import Joi from "joi";
+import HapiRateLimitor from "hapi-rate-limitor";
 
 import routes from "../routes";
 import myDataSource from "../services/dbConnection";
@@ -34,6 +35,14 @@ const developmentServer = async () => {
     });
 
   await redisClient.connect();
+
+  await server.register({
+    plugin: HapiRateLimitor,
+    options: {
+      enabled: true,
+      namespace: "hapi-rate-limitor",
+    },
+  });
 
   server.validator(Joi);
   await server.register(basic);
