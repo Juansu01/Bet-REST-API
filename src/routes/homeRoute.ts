@@ -9,6 +9,13 @@ export const homeRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: homeHandler,
     options: {
       auth: "jwt",
+      plugins: {
+        "hapi-rate-limitor": {
+          max: 5, // a maximum of 5 requests
+          duration: 60 * 1000, // per minute
+          enabled: true,
+        },
+      },
     },
   },
 ];
