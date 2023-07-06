@@ -6,7 +6,7 @@ export interface LogInResponsePayload {
   access_token: string;
 }
 
-export interface TestCredentials extends AuthCredentials<UserCredentials> {
+export interface UserTestCredentials extends AuthCredentials<UserCredentials> {
   username: string;
   password: string;
   role?: string;
