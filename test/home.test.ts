@@ -7,6 +7,8 @@ import { LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import redisClient from "../src/cache/redisClient";
+import logUserIn from "./utils/logUserIn";
+import { UserTestCredentials } from "../src/types/test";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 

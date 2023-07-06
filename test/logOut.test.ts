@@ -3,7 +3,7 @@ import { expect } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
-import { TestCredentials } from "../src/types/test";
+import { UserTestCredentials } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import logUserIn from "./utils/logUserIn";
 import redisClient from "../src/cache/redisClient";
@@ -12,7 +12,7 @@ const { after, before, describe, it } = (exports.lab = Lab.script());
 
 describe("Test for log out route.", () => {
   let server: TestServer;
-  const validUser: TestCredentials = {
+  const validUser: UserTestCredentials = {
     username: "johndoe4@example.com",
     password: "password123",
   };

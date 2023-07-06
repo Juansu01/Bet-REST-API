@@ -8,7 +8,7 @@ import {
   UserBalanceResponsePayload,
 } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
-import { TestCredentials } from "../src/types/test";
+import { UserTestCredentials } from "../src/types/test";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
@@ -18,7 +18,7 @@ import redisClient from "../src/cache/redisClient";
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
 describe("Testing transaction route.", () => {
-  const userCredentials: TestCredentials = {
+  const userCredentials: UserTestCredentials = {
     username: "johndoe4@example.com",
     password: "password123",
     role: "user",

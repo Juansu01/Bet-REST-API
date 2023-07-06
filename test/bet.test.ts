@@ -4,7 +4,7 @@ import { expect, fail } from "@hapi/code";
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
 import myDataSource from "../src/services/dbConnection";
-import { TestCredentials } from "../src/types/test";
+import { UserTestCredentials } from "../src/types/test";
 import logUserIn from "./utils/logUserIn";
 import { Bet } from "../src/entities/Bet";
 import redisClient from "../src/cache/redisClient";
@@ -14,7 +14,7 @@ const { describe, it, before, after } = lab;
 export { lab };
 
 describe("Testing bet route.", () => {
-  const userCredentials: TestCredentials = {
+  const userCredentials: UserTestCredentials = {
     username: "johndoe4@example.com",
     password: "password123",
     role: "user",

@@ -3,7 +3,7 @@ import { expect } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
-import { TestCredentials, LogInResponsePayload } from "../src/types/test";
+import { UserTestCredentials, LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import logUserIn from "./utils/logUserIn";
@@ -13,15 +13,15 @@ const { after, before, describe, it } = (exports.lab = Lab.script());
 
 describe("Test for log in route.", () => {
   let server: TestServer;
-  const validUser: TestCredentials = {
+  const validUser: UserTestCredentials = {
     username: "johndoe4@example.com",
     password: "password123",
   };
-  const invalidUser: TestCredentials = {
+  const invalidUser: UserTestCredentials = {
     username: "johndoeexample(/com",
     password: "notagoodpassword",
   };
-  const blockedUser: TestCredentials = {
+  const blockedUser: UserTestCredentials = {
     username: "blockeduser1@example.com",
     password: "imblocked123",
   };
