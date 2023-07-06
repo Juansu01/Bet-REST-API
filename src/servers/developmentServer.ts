@@ -40,6 +40,7 @@ const developmentServer = async () => {
     plugin: HapiRateLimitor,
     options: {
       enabled: true,
+      userAttribute: "email",
       namespace: "hapi-rate-limitor",
       max: 60, // a maximum of 60 requests
       duration: 60 * 1000, // per minute (the value is in milliseconds)
