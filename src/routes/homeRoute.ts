@@ -11,6 +11,7 @@ export const homeRoutes: ServerRoute<ReqRefDefaults>[] = [
       auth: "jwt",
       plugins: {
         "hapi-rate-limitor": {
+          userAttribute: "email",
           max: 5, // a maximum of 5 requests
           duration: 60 * 1000, // per minute
           enabled: true,
