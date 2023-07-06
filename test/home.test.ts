@@ -1,5 +1,5 @@
 import Lab from "@hapi/lab";
-import { expect } from "@hapi/code";
+import { expect, fail } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
@@ -13,6 +13,7 @@ const { describe, it, before, after } = (exports.lab = Lab.script());
 describe("Test for home route access.", () => {
   let server: TestServer;
   let accessToken: string | null;
+  let willSkip: boolean = false;
   const userCredentials: UserTestCredentials = {
     username: "johndoe@example.com",
     password: "password123",
@@ -23,6 +24,7 @@ describe("Test for home route access.", () => {
     server = await testServer();
     await myDataSource.initialize();
     accessToken = await logUserIn(userCredentials, server);
+    if (!accessToken) willSkip = true;
   });
 
   after(async () => {
@@ -32,6 +34,7 @@ describe("Test for home route access.", () => {
   });
 
   it("User can access home when providing a valid access token.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
     const res = await server.inject({
       method: "get",
       url: "/",
@@ -45,6 +48,7 @@ describe("Test for home route access.", () => {
     );
   });
   it("User with wrong token cannot access home.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
     const res = await server.inject({
       method: "get",
       url: "/",
