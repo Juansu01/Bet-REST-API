@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import basic from "@hapi/basic";
 import Jwt from "@hapi/jwt";
 import Joi from "joi";
+import HapiRateLimitor from "hapi-rate-limitor";
 
 import routes from "../routes";
 import { basicAuthentication } from "../auth/basicAuth";
@@ -13,6 +14,16 @@ const testServer = async () => {
   const server = new Hapi.Server({
     port: process.env.PORT,
     host: process.env.HOST,
+  });
+
+  await server.register({
+    plugin: HapiRateLimitor,
+    options: {
+      enabled: false,
+      userAttribute: "email",
+      namespace: "hapi-rate-limitor",
+      duration: 60 * 1000, // per minute (the value is in milliseconds)
+    },
   });
 
   server.validator(Joi);
