@@ -3,9 +3,7 @@ import { expect } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
-import { LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
-import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import redisClient from "../src/cache/redisClient";
 import logUserIn from "./utils/logUserIn";
 import { UserTestCredentials } from "../src/types/test";
@@ -14,24 +12,17 @@ const { describe, it, before, after } = (exports.lab = Lab.script());
 
 describe("Test for home route access.", () => {
   let server: TestServer;
-  let accessToken: string;
-  const username = "johndoe@example.com";
-  const password = "password123";
-  const authHeader = generateBasicAuthHeader(username, password);
+  let accessToken: string | null;
+  const userCredentials: UserTestCredentials = {
+    username: "johndoe@example.com",
+    password: "password123",
+  };
 
   before(async () => {
     await redisClient.connect();
     server = await testServer();
     await myDataSource.initialize();
-    const res = await server.inject({
-      method: "post",
-      url: "/api/login",
-      headers: {
-        authorization: authHeader,
-      },
-    });
-    const payloadToJSON: LogInResponsePayload = JSON.parse(res.payload);
-    accessToken = payloadToJSON.access_token;
+    accessToken = await logUserIn(userCredentials, server);
   });
 
   after(async () => {
