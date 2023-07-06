@@ -4,7 +4,7 @@ import { expect } from "@hapi/code";
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
 import myDataSource from "../src/services/dbConnection";
-import { TestCredentials } from "../src/types/test";
+import { UserTestCredentials } from "../src/types/test";
 import { TransactionPayload } from "../src/types/transaction";
 import { TransactionCategory } from "../src/entities/Transaction";
 import { Transaction } from "../src/entities/Transaction";
@@ -16,7 +16,7 @@ import redisClient from "../src/cache/redisClient";
 const { describe, it, before, after } = (exports.lab = Lab.script());
 
 describe("Testing admin access to protected routes.", () => {
-  const adminCredentials: TestCredentials = {
+  const adminCredentials: UserTestCredentials = {
     username: "johndoe@example.com",
     password: "password123",
     role: "admin",
