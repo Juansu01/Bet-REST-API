@@ -15,7 +15,7 @@ describe("Test for home route access.", () => {
   let accessToken: string | null;
   let willSkip: boolean = false;
   const userCredentials: UserTestCredentials = {
-    username: "johndoe8@example.com",
+    username: "johndoe10@example.com",
     password: "password123",
   };
 
@@ -31,5 +31,32 @@ describe("Test for home route access.", () => {
     await server.stop();
     await redisClient.quit();
     await myDataSource.destroy();
+  });
+
+  it("User cannot acces home route more than 5 times in one minute.", async () => {
+    if (willSkip) fail("Wrong user credentials, test automatically failed.");
+    for (let i = 0; i < 5; i++) {
+      const res = await server.inject({
+        method: "get",
+        url: "/",
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+    }
+    const rejectedRes = await server.inject({
+      method: "get",
+      url: "/",
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
+    expect(rejectedRes.statusCode).to.equal(429);
+    const json = JSON.parse(rejectedRes.payload);
+    expect(json).to.contain({
+      statusCode: 429,
+      error: "Too Many Requests",
+      message: "You have exceeded the request limit",
+    });
   });
 });
