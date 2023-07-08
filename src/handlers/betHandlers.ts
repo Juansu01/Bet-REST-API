@@ -131,3 +131,21 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
     winners: winnersList,
   });
 };
+
+export const deleteBetById = async (
+  request: BetRequest,
+  h: ResponseToolkit
+) => {
+  const { id } = request.params;
+  const bet = await Bet.findOne({
+    where: { id: parseInt(id) },
+    relations: { options: true, match: true },
+  });
+
+  if (bet) {
+    await bet.softRemove();
+    return h.response("Bet successfully deleted.");
+  }
+
+  throw Boom.notFound("Bet was not found.");
+};
