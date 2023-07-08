@@ -33,7 +33,7 @@ describe("Test for home route access.", () => {
     await myDataSource.destroy();
   });
 
-  it("User cannot acces home route more than 5 times in one minute.", async () => {
+  it("User cannot access home route more than 5 times in one minute.", async () => {
     if (willSkip) fail("Wrong user credentials, test automatically failed.");
     for (let i = 0; i < 5; i++) {
       const res = await server.inject({
