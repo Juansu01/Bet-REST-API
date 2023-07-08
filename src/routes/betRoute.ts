@@ -7,6 +7,7 @@ import {
   getBetById,
   changeBetStatus,
   settleBet,
+  deleteBetById,
 } from "../handlers/betHandlers";
 import { checkAdminPermissions } from "../middlewares/checkAdminPermission";
 
@@ -88,6 +89,25 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
         payload: Joi.object({
           winning_option: Joi.string().required(),
         }),
+        params: Joi.object({
+          id: Joi.number()
+            .positive()
+            .messages({
+              "number.positive": "Id must be positive.",
+            })
+            .required(),
+        }),
+      },
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/api/bets/{id}",
+    handler: deleteBetById,
+    options: {
+      auth: "jwt",
+      pre: [{ method: checkAdminPermissions, assign: "AdminPermissions" }],
+      validate: {
         params: Joi.object({
           id: Joi.number()
             .positive()
