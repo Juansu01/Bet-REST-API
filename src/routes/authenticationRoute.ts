@@ -46,6 +46,11 @@ export const authenticationRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: loginHandler,
     options: {
       auth: "simple",
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
+      },
     },
   },
   {
@@ -54,6 +59,11 @@ export const authenticationRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: logoutHandler,
     options: {
       auth: "jwt",
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
+      },
     },
   },
   {
