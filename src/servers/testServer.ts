@@ -8,6 +8,7 @@ import HapiRateLimitor from "hapi-rate-limitor";
 import routes from "../routes";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
+import { options } from "../hapi-rate-limitor/options";
 
 dotenv.config();
 const testServer = async () => {
@@ -18,12 +19,7 @@ const testServer = async () => {
 
   await server.register({
     plugin: HapiRateLimitor,
-    options: {
-      enabled: false,
-      userAttribute: "email",
-      namespace: "hapi-rate-limitor",
-      duration: 60 * 1000, // per minute (the value is in milliseconds)
-    },
+    options: options,
   });
 
   server.validator(Joi);
