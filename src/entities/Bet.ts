@@ -9,7 +9,6 @@ import {
 
 import { BaseClass } from "./BaseClass";
 import { Option } from "./Option";
-import { Event } from "./Event";
 import { Match } from "./Match";
 
 export enum BetStatus {
@@ -28,7 +27,7 @@ export class Bet extends BaseClass {
   @Column({
     type: "enum",
     enum: BetStatus,
-    default: "active"
+    default: "active",
   })
   status: string;
 
@@ -45,6 +44,7 @@ export class Bet extends BaseClass {
 
   @ManyToMany((type) => Option, {
     cascade: true,
+    onDelete: "CASCADE",
   })
   @JoinTable({
     name: "bets_options",
