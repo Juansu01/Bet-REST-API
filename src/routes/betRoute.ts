@@ -25,6 +25,11 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
           result: Joi.string().allow(null).optional(),
         }),
       },
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
+      },
     },
   },
   {
@@ -33,6 +38,11 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
     handler: getAllBets,
     options: {
       auth: "jwt",
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
+      },
     },
   },
   {
@@ -50,6 +60,11 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
             })
             .required(),
         }),
+      },
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
       },
     },
   },
@@ -76,6 +91,11 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
             .invalid("settled"),
         },
       },
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
+      },
     },
   },
   {
@@ -98,6 +118,11 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
             .required(),
         }),
       },
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
+      },
     },
   },
   {
@@ -116,6 +141,11 @@ export const betRoutes: ServerRoute<ReqRefDefaults>[] = [
             })
             .required(),
         }),
+      },
+      plugins: {
+        "hapi-rate-limitor": {
+          enabled: false,
+        },
       },
     },
   },
