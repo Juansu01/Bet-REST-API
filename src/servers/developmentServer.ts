@@ -1,15 +1,14 @@
 import Hapi from "@hapi/hapi";
 import dotenv from "dotenv";
 import basic from "@hapi/basic";
-import Jwt from "@hapi/jwt";
 import Joi from "joi";
-import HapiRateLimitor from "hapi-rate-limitor";
 
 import routes from "../routes";
 import myDataSource from "../services/dbConnection";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
 import redisClient from "../cache/redisClient";
+import pluginList from "../plugins";
 
 dotenv.config();
 const developmentServer = async () => {
@@ -36,21 +35,11 @@ const developmentServer = async () => {
 
   await redisClient.connect();
 
-  await server.register({
-    plugin: HapiRateLimitor,
-    options: {
-      enabled: true,
-      userAttribute: "email",
-      namespace: "hapi-rate-limitor",
-      max: 60, // a maximum of 60 requests
-      duration: 60 * 1000, // per minute (the value is in milliseconds)
-    },
-  });
+  await server.register(pluginList);
 
   server.validator(Joi);
   await server.register(basic);
   server.auth.strategy("simple", "basic", { validate: basicAuthentication });
-  await server.register(Jwt);
   server.auth.strategy("jwt", "jwt", {
     keys: process.env.ACCESS_TOKEN_SECRET as string,
     verify: {
