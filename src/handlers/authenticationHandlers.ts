@@ -84,22 +84,19 @@ export const blockUser = async (
   const { id } = request.params;
   const userToBlock = await User.findOneBy({ id: parseInt(id) });
 
-  if (userToBlock) {
-    if (userToBlock.role === "admin")
-      throw Boom.forbidden("Cannot block other admins.");
+  if (!userToBlock) throw Boom.notFound("User was not found.");
 
-    if (userToBlock.state === "blocked")
-      throw Boom.badRequest("User is already blocked.");
+  if (userToBlock.role === "admin")
+    throw Boom.forbidden("Cannot block other admins.");
 
-    userToBlock.state = "blocked";
-    await userToBlock.save();
+  if (userToBlock.state === "blocked")
+    throw Boom.badRequest("User is already blocked.");
 
-    return h.response(
-      `User identified by email: ${userToBlock.email} has been blocked.`
-    );
-  }
-
-  throw Boom.notFound("User was not found.");
+  userToBlock.state = "blocked";
+  await userToBlock.save();
+  return h.response(
+    `User identified by email: ${userToBlock.email} has been blocked.`
+  );
 };
 
 export const logoutHandler = async (request: Request, h: ResponseToolkit) => {
