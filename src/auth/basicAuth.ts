@@ -22,13 +22,14 @@ export const basicAuthentication = async (
     },
   });
 
-  if (user && user.password === password) {
-    if (user.state === "blocked") throw Boom.unauthorized("User is blocked.");
-    return {
-      isValid: true,
-      credentials: { email: user.email, role: user.role },
-    };
-  }
+  if (!user) throw Boom.notFound("User was not found.");
 
-  return { isValid: false };
+  if (user.state === "blocked") throw Boom.unauthorized("User is blocked.");
+
+  if (user.password !== password) return { isValid: false };
+
+  return {
+    isValid: true,
+    credentials: { email: user.email, role: user.role },
+  };
 };
