@@ -1,14 +1,12 @@
 import Hapi from "@hapi/hapi";
 import dotenv from "dotenv";
 import basic from "@hapi/basic";
-import Jwt from "@hapi/jwt";
 import Joi from "joi";
-import HapiRateLimitor from "hapi-rate-limitor";
 
 import routes from "../routes";
 import { basicAuthentication } from "../auth/basicAuth";
 import { validateToken } from "../auth/validateToken";
-import { options } from "../hapi-rate-limitor/options";
+import pluginList from "../plugins";
 
 dotenv.config();
 const testServer = async () => {
@@ -17,15 +15,11 @@ const testServer = async () => {
     host: process.env.HOST,
   });
 
-  await server.register({
-    plugin: HapiRateLimitor,
-    options: options,
-  });
+  await server.register(pluginList);
 
   server.validator(Joi);
   await server.register(basic);
   server.auth.strategy("simple", "basic", { validate: basicAuthentication });
-  await server.register(Jwt);
   server.auth.strategy("jwt", "jwt", {
     keys: process.env.ACCESS_TOKEN_SECRET as string,
     verify: {
