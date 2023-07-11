@@ -15,7 +15,7 @@ export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const newBet = Bet.create({ match_id, result });
 
   await newBet.save();
-  return h.response(newBet).header("Content-Type", "application/json");
+  return h.response(newBet);
 };
 
 export const getBetById = async (request: BetRequest, h: ResponseToolkit) => {
@@ -38,7 +38,7 @@ export const getAllBets = async (request: BetRequest, h: ResponseToolkit) => {
     },
   });
 
-  return h.response(allBets).header("Content-Type", "application/json");
+  return h.response(allBets);
 };
 
 export const changeBetStatus = async (
@@ -49,24 +49,17 @@ export const changeBetStatus = async (
   const { status } = request.payload;
   const bet = await Bet.findOne({ where: { id: parseInt(id) } });
 
-  if (bet) {
-    if (bet.status === status)
-      throw Boom.badRequest(`Bet status is ${bet.status} already.`);
+  if (!bet) throw Boom.notFound("Bet wasn't found.");
 
-    if (!Object.values(BetStatus).includes(status as BetStatus))
-      throw Boom.badRequest(
-        `Bet status ${status} is not inside valid statuses ` +
-          "must be: active or cancelled"
-      );
-    const previousStatus = bet.status;
-    bet.status = status;
-    await bet.save();
-    return h
-      .response(`Bet status changed from ${previousStatus} to ${bet.status}`)
-      .header("Content-Type", "application/json");
-  }
+  if (bet.status === status)
+    throw Boom.badRequest(`Bet status is ${bet.status} already.`);
 
-  throw Boom.notFound("Bet wasn't found.");
+  const previousStatus = bet.status;
+  bet.status = status;
+  await bet.save();
+  return h.response(
+    `Bet status changed from ${previousStatus} to ${bet.status}`
+  );
 };
 
 export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
