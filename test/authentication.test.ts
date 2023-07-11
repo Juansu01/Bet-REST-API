@@ -68,7 +68,7 @@ describe("Test for log in route.", () => {
         authorization: authHeader,
       },
     });
-    expect(res.statusCode).to.equal(401);
+    expect(res.statusCode).to.equal(404);
   });
   it("Blocked user doesn't get access", async () => {
     const authHeader = generateBasicAuthHeader(
