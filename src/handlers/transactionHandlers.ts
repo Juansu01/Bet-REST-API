@@ -66,7 +66,9 @@ export const getUserBalance = async (
   const userCredentials = request.auth.credentials as UserCredentials;
   const user = await User.findOne({ where: { email: userCredentials.email } });
 
-  return h.response({ username: user?.username, balance: user?.balance });
+  if (!user) throw Boom.notFound("User was not found.");
+
+  return h.response({ username: user.username, balance: user.balance });
 };
 
 export const getUserBalanceById = async (
