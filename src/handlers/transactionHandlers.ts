@@ -11,7 +11,7 @@ export const createNewTransaction = async (
   request: TransactionRequest,
   h: ResponseToolkit
 ) => {
-  const { user_id, category, status, amount } = request.payload;
+  const { user_id, category, amount } = request.payload;
   const user = await User.findOneBy({ id: user_id });
 
   if (!user) throw Boom.notFound("User not found, won't add new transaction.");
@@ -21,17 +21,9 @@ export const createNewTransaction = async (
       "Category must be of these categories: deposit, withdraw, winning, bet"
     );
 
-  const result: string | Transaction = await makeTransaction(
-    category,
-    user,
-    amount
-  );
+  const result = await makeTransaction(category, user, amount);
 
-  if (result instanceof Transaction) {
-    return h.response(result);
-  }
-
-  throw Boom.badRequest(result);
+  return h.response(result);
 };
 
 export const getAllTransactions = async (
@@ -62,17 +54,9 @@ export const makeTransactionByUser = async (
       "Category must be of these categories: deposit, withdraw, winning, bet"
     );
 
-  const result: string | Transaction = await makeTransaction(
-    category,
-    user,
-    amount
-  );
+  const result = await makeTransaction(category, user, amount);
 
-  if (result instanceof Transaction) {
-    return h.response(result);
-  }
-
-  throw Boom.badRequest(result);
+  return h.response(result);
 };
 
 export const getUserBalance = async (
