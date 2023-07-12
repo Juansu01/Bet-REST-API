@@ -8,7 +8,7 @@ import {
   RegisterRequest,
   AuthenticationRequest,
   UserCredentials,
-  MyArtifacts,
+  AuthArtifacts,
 } from "../types/authentication";
 import { hapiJWTGenerateToken } from "../services/accessTokenGenerators";
 import redisClient from "../cache/redisClient";
@@ -101,14 +101,12 @@ export const blockUser = async (
 
 export const logoutHandler = async (request: Request, h: ResponseToolkit) => {
   const secret = process.env.ACCESS_TOKEN_SECRET as string;
-  const artifactsAsMine = request.auth.artifacts as MyArtifacts;
-  const artifactsAsJWT = request.auth
-    .artifacts as HapiJwt.Artifacts<HapiJwt.JwtRefs>;
+  const artifacts = request.auth.artifacts as AuthArtifacts;
 
   try {
-    Jwt.token.verify(artifactsAsJWT, secret);
-    const result = await redisClient.get(artifactsAsMine.token);
-    if (result) redisClient.set(artifactsAsMine.token, "revoked");
+    Jwt.token.verify(artifacts, secret);
+    const result = await redisClient.get(artifacts.token);
+    if (result) redisClient.set(artifacts.token, "revoked");
   } catch (err) {
     console.error(err);
     return h.response({ message: "Successfully logged out." });
