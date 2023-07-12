@@ -80,7 +80,7 @@ export const getUserBalanceById = async (
 
   if (!user) throw Boom.notFound("User was not found.");
 
-  return h.response({ username: user?.username, balance: user?.balance });
+  return h.response({ username: user.username, balance: user.balance });
 };
 
 export const getUserTransactions = async (
@@ -116,22 +116,13 @@ export const getUserTransactionsById = async (
 ) => {
   const category = request.query.category as TransactionCategory;
   const { id } = request.params;
-  let transactions;
   const user = await User.findOne({ where: { id: parseInt(id) } });
 
   if (!user) throw Boom.notFound("User does not exist.");
 
-  if (category) {
-    if (!Object.values(TransactionCategory).includes(category))
-      throw Boom.notAcceptable(
-        "Category must be of these categories: deposit, withdraw, winning, bet"
-      );
-    transactions = await Transaction.find({
-      where: { category: category, user_id: user.id },
-    });
-  } else {
-    transactions = await Transaction.find({ where: { user_id: user.id } });
-  }
+  const transactions = await Transaction.find({
+    where: { category: category, user_id: user.id },
+  });
 
   return h.response(transactions);
 };
