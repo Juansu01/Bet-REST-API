@@ -2,7 +2,7 @@ import HapiRateLimitor from "hapi-rate-limitor";
 import { Options } from "hapi-rate-limitor";
 import { UserCredentials } from "../types/authentication";
 
-export const options: Options = {
+const options: Options = {
   enabled: true,
   userAttribute: "email",
   namespace: "hapi-rate-limitor",
@@ -30,7 +30,9 @@ export const options: Options = {
   },
 };
 
-export const HapiRateLimitorPluginObject = {
+const HapiRateLimitorPluginObject = {
   plugin: HapiRateLimitor,
   options: options,
 };
+
+export default HapiRateLimitorPluginObject;
