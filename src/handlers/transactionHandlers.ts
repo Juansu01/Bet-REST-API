@@ -16,11 +16,6 @@ export const createNewTransaction = async (
 
   if (!user) throw Boom.notFound("User not found, won't add new transaction.");
 
-  if (!Object.values(TransactionCategory).includes(category))
-    throw Boom.notAcceptable(
-      "Category must be of these categories: deposit, withdraw, winning, bet"
-    );
-
   const result = await makeTransaction(category, user, amount);
 
   return h.response(result);
@@ -48,11 +43,6 @@ export const makeTransactionByUser = async (
   const user = await User.findOne({ where: { email: userCredentials.email } });
 
   if (!user) throw Boom.notFound("User was not found.");
-
-  if (!Object.values(TransactionCategory).includes(category))
-    throw Boom.notAcceptable(
-      "Category must be of these categories: deposit, withdraw, winning, bet"
-    );
 
   const result = await makeTransaction(category, user, amount);
 
@@ -89,23 +79,13 @@ export const getUserTransactions = async (
 ) => {
   const category = request.query.category as TransactionCategory;
   const userCredentials = request.auth.credentials as UserCredentials;
-  let transactions;
   const user = await User.findOne({ where: { email: userCredentials.email } });
 
   if (!user) throw Boom.notFound("User was not found.");
 
-  transactions = await Transaction.find({ where: { user_id: user.id } });
-
-  if (category) {
-    if (!Object.values(TransactionCategory).includes(category))
-      throw Boom.notAcceptable(
-        "Category must be of these categories: deposit, withdraw, winning, bet"
-      );
-
-    transactions = await Transaction.find({
-      where: { category: category, user_id: user!.id },
-    });
-  }
+  const transactions = await Transaction.find({
+    where: { category: category, user_id: user.id },
+  });
 
   return h.response(transactions);
 };
