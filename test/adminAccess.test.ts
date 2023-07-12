@@ -225,7 +225,7 @@ describe("Testing admin access to protected routes.", () => {
   });
   it("Admin cannot settle bet through change bet status route.", async () => {
     const betId = 1;
-    const statusToAdd = "setted";
+    const statusToAdd = "settled";
     const statusRes = await server.inject({
       method: "patch",
       url: `/api/bets/${betId}`,
