@@ -133,7 +133,7 @@ describe("Testing transaction route.", () => {
         payload: payload,
       });
       const json = JSON.parse(res.payload);
-      expect(res.statusCode).to.equal(400);
+      expect(res.statusCode).to.equal(406);
       expect(json).to.contain(["error", "message"]);
       expect(json).to.contain({
         message: "Cannot withdraw, balance is not enough.",
