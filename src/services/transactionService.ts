@@ -1,3 +1,5 @@
+import Boom from "@hapi/boom";
+
 import { TransactionCategory } from "../entities/Transaction";
 import { User } from "../entities/User";
 import { Transaction } from "../entities/Transaction";
@@ -6,34 +8,31 @@ export const makeTransaction = async (
   depositType: TransactionCategory,
   user: User,
   amount: number
-): Promise<string | Transaction> => {
-  if (depositType === "deposit" || depositType === "winning") {
-    user.balance = +user.balance + amount;
+): Promise<Transaction> => {
+  if (
+    depositType === TransactionCategory.DEPOSIT ||
+    depositType === TransactionCategory.WINNING
+  ) {
+    user.balance = user.balance + amount;
     await user.save();
-    const newTransaction = Transaction.create({
-      category: depositType,
-      status: "accepted",
-      amount,
-    });
-    newTransaction.user = user;
-    await newTransaction.save();
-    return newTransaction;
   }
 
-  if (depositType === "withdraw" || depositType === "bet") {
-    if (+user.balance >= amount) {
-      user.balance = +user.balance - amount;
-      await user.save();
-      const newTransaction = Transaction.create({
-        category: depositType,
-        status: "accepted",
-        amount,
-      });
-      newTransaction.user = user;
-      await newTransaction.save();
-      return newTransaction;
-    }
-    return `Cannot ${depositType}, balance is not enough.`;
+  if (
+    depositType === TransactionCategory.WITHDRAW ||
+    depositType === TransactionCategory.BET
+  ) {
+    if (user.balance < amount)
+      throw Boom.notAcceptable(`Cannot ${depositType}, balance is not enough.`);
+
+    user.balance = user.balance - amount;
+    await user.save();
   }
-  return `${depositType} is not a supported deposit type.`;
+  const newTransaction = Transaction.create({
+    category: depositType,
+    status: "accepted",
+    amount,
+  });
+  newTransaction.user = user;
+  await newTransaction.save();
+  return newTransaction;
 };
