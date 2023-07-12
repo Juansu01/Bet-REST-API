@@ -28,7 +28,7 @@ export const createNewTransaction = async (
   );
 
   if (result instanceof Transaction) {
-    return h.response(result).header("Content-Type", "application/json");
+    return h.response(result);
   }
 
   throw Boom.badRequest(result);
@@ -44,7 +44,7 @@ export const getAllTransactions = async (
     },
   });
 
-  return h.response(allTransactions).header("Content-Type", "application/json");
+  return h.response(allTransactions);
 };
 
 export const makeTransactionByUser = async (
@@ -69,7 +69,7 @@ export const makeTransactionByUser = async (
   );
 
   if (result instanceof Transaction) {
-    return h.response(result).header("Content-Type", "application/json");
+    return h.response(result);
   }
 
   throw Boom.badRequest(result);

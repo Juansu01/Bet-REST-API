@@ -17,7 +17,7 @@ export const createNewTeam = async (
   const newTeam = Team.create({ match_id, name });
 
   await newTeam.save();
-  return h.response(newTeam).header("Content-Type", "application/json");
+  return h.response(newTeam);
 };
 
 export const getAllTeams = async (request: TeamRequest, h: ResponseToolkit) => {
@@ -27,7 +27,7 @@ export const getAllTeams = async (request: TeamRequest, h: ResponseToolkit) => {
     },
   });
 
-  return h.response(allTeams).header("Content-Type", "application/json");
+  return h.response(allTeams);
 };
 
 export const getTeamById = async (request: TeamRequest, h: ResponseToolkit) => {
