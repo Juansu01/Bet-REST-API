@@ -23,7 +23,7 @@ export const createNewOption = async (
   await betToAddOptionTo.save();
   await newOption.save();
 
-  return h.response(newOption).header("Content-Type", "application/json");
+  return h.response(newOption);
 };
 
 export const getAllOptions = async (
@@ -32,7 +32,7 @@ export const getAllOptions = async (
 ) => {
   const allOptions = await Option.find({ relations: { bets: true } });
 
-  return h.response(allOptions).header("Content-Type", "application/json");
+  return h.response(allOptions);
 };
 
 export const getOptionById = async (
