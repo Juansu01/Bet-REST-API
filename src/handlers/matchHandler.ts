@@ -14,9 +14,11 @@ export const createNewMatch = async (
 
   if (!event)
     throw Boom.notFound("Couldn't find event, won't create new match.");
+
   const newMatch = Match.create({ date, event_id, winner });
   await newMatch.save();
-  return h.response(newMatch).header("Content-Type", "application/json");
+
+  return h.response(newMatch);
 };
 
 export const getAllMatches = async (
