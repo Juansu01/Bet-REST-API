@@ -58,7 +58,7 @@ export const createNewPlacedBet = async (
   user.placed_bets.push(newPlacedBet);
   await user.save();
   await newPlacedBet.save();
-  return h.response(newPlacedBet).header("Content-Type", "application/json");
+  return h.response(newPlacedBet);
 };
 
 export const getAllPlacedBets = async (
@@ -78,7 +78,7 @@ export const getAllPlacedBets = async (
     },
   });
 
-  return h.response(placedBets).header("Content-Type", "application/json");
+  return h.response(placedBets);
 };
 
 export const getPlacedBetsByUser = async (
