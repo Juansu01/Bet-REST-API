@@ -1,5 +1,5 @@
 import Lab from "@hapi/lab";
-import { expect } from "@hapi/code";
+import { expect, fail } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
@@ -19,12 +19,14 @@ describe("Testing placed bet route.", () => {
   };
   let userAccessToken: string | null;
   let server: TestServer;
+  let willFail: boolean = false;
 
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
     await redisClient.connect();
     userAccessToken = await logUserIn(userCredentials, server);
+    if (!userAccessToken) willFail = true;
   });
 
   after(async () => {
@@ -34,6 +36,7 @@ describe("Testing placed bet route.", () => {
   });
 
   it("User cannot place a bet on a settled bet", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     // The bet with id 2 is settled.
     const payload: PlacedBetPayload = {
       bet_option: "Fierce Panthers",
@@ -56,6 +59,7 @@ describe("Testing placed bet route.", () => {
     });
   });
   it("User can get their placed bets", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     // The bet with id 1 is settled.
     const res = await server.inject({
       method: "get",
@@ -69,6 +73,7 @@ describe("Testing placed bet route.", () => {
     expect(Array.isArray(json)).to.equal(true);
   });
   it("User cannot get placed bet using id", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const placedBetId = 1;
     const res = await server.inject({
       method: "get",
@@ -85,6 +90,7 @@ describe("Testing placed bet route.", () => {
     });
   });
   it("User cannot get all placed bets", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/placed-bets",
