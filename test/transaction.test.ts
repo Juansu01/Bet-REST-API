@@ -1,5 +1,5 @@
 import Lab from "@hapi/lab";
-import { expect } from "@hapi/code";
+import { expect, fail } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
@@ -22,12 +22,14 @@ describe("Testing transaction route.", () => {
   };
   let userAccessToken: string | null;
   let server: TestServer;
+  let willFail: boolean = false;
 
   before(async () => {
     server = await testServer();
     await redisClient.connect();
     await myDataSource.initialize();
     userAccessToken = await logUserIn(userCredentials, server);
+    if (!userAccessToken) willFail = true;
   });
 
   after(async () => {
@@ -35,7 +37,9 @@ describe("Testing transaction route.", () => {
     await redisClient.quit();
     await myDataSource.destroy();
   });
+
   it("User can get their own balance", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/user/balance",
@@ -48,6 +52,7 @@ describe("Testing transaction route.", () => {
     expect(json).to.contain(["username", "balance"]);
   });
   it("User can get their own transactions", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/my-transactions",
@@ -67,6 +72,7 @@ describe("Testing transaction route.", () => {
     }
   });
   it("User can make a deposit transaction", { skip: true }, async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const payload: TransactionPayload = {
       category: TransactionCategory.DEPOSIT,
       amount: 5,
@@ -92,6 +98,7 @@ describe("Testing transaction route.", () => {
     "User cannot withdraw an amount that is " +
       "greater than their current balance",
     async () => {
+      if (willFail) fail("Wrong user credentials, test automatically failed");
       const userBalanceRes = await server.inject({
         method: "get",
         url: "/api/user/balance",
@@ -124,6 +131,7 @@ describe("Testing transaction route.", () => {
     }
   );
   it("User cannot get all transactions", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/transactions",
@@ -136,6 +144,7 @@ describe("Testing transaction route.", () => {
     expect(json).to.contain({ message: "You are not an admin." });
   });
   it("User cannot get a specific user transactions", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const userId = 1;
     const res = await server.inject({
       method: "get",
@@ -149,6 +158,7 @@ describe("Testing transaction route.", () => {
     expect(json).to.contain({ message: "You are not an admin." });
   });
   it("User cannot get a specific user balance", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const userId = 1;
     const res = await server.inject({
       method: "get",
