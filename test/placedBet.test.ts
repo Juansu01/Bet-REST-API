@@ -3,13 +3,12 @@ import { expect } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
-import { LogInResponsePayload } from "../src/types/test";
 import myDataSource from "../src/services/dbConnection";
 import { UserTestCredentials } from "../src/types/test";
-import generateBasicAuthHeader from "./utils/generateAuthHeader";
 import { PlacedBetPayload } from "../src/types/placedBet";
 import { PlacedBet } from "../src/entities/PlacedBet";
 import redisClient from "../src/cache/redisClient";
+import logUserIn from "./utils/logUserIn";
 
 const { describe, it, before, after } = (exports.lab = Lab.script());
 describe("Testing placed bet route.", () => {
@@ -18,28 +17,14 @@ describe("Testing placed bet route.", () => {
     password: "password123",
     role: "user",
   };
-  let userAccessToken: string;
+  let userAccessToken: string | null;
   let server: TestServer;
 
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
     await redisClient.connect();
-    const userAuthToken = generateBasicAuthHeader(
-      userCredentials.username,
-      userCredentials.password
-    );
-
-    const userRes = await server.inject({
-      method: "post",
-      url: "/api/login",
-      headers: {
-        authorization: userAuthToken,
-      },
-    });
-
-    const userLogInPayload: LogInResponsePayload = JSON.parse(userRes.payload);
-    userAccessToken = userLogInPayload.access_token;
+    userAccessToken = await logUserIn(userCredentials, server);
   });
 
   after(async () => {
