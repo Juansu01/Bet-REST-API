@@ -1,9 +1,12 @@
 import { TestServer } from "../../src/types/server";
-import { LogInResponsePayload, TestCredentials } from "../../src/types/test";
+import {
+  LogInResponsePayload,
+  UserTestCredentials,
+} from "../../src/types/test";
 import generateBasicAuthHeader from "./generateAuthHeader";
 
 const logUserIn = async (
-  userCredentials: TestCredentials,
+  userCredentials: UserTestCredentials,
   server: TestServer
 ): Promise<string | null> => {
   const userAuthToken = generateBasicAuthHeader(
