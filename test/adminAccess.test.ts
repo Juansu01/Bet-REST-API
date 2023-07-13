@@ -1,5 +1,5 @@
 import Lab from "@hapi/lab";
-import { expect } from "@hapi/code";
+import { expect, fail } from "@hapi/code";
 
 import testServer from "../src/servers/testServer";
 import { TestServer } from "../src/types/server";
@@ -23,12 +23,14 @@ describe("Testing admin access to protected routes.", () => {
   };
   let adminAccessToken: string | null;
   let server: TestServer;
+  let willFail: boolean = false;
 
   before(async () => {
     server = await testServer();
     await myDataSource.initialize();
     await redisClient.connect();
     adminAccessToken = await logUserIn(adminCredentials, server);
+    if (!adminAccessToken) willFail = true;
     const table = server.table();
     console.log("LIST OF ALL ROUTES");
     table.forEach((route) =>
@@ -43,6 +45,7 @@ describe("Testing admin access to protected routes.", () => {
   });
 
   it("Admin can get all transactions", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/transactions",
@@ -55,6 +58,7 @@ describe("Testing admin access to protected routes.", () => {
     expect(res.statusCode).to.equal(200);
   });
   it("Admin can get a specific user transactions", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const userId = 1;
     const res = await server.inject({
       method: "get",
@@ -70,6 +74,7 @@ describe("Testing admin access to protected routes.", () => {
     expect(json[0]).to.contain({ user_id: userId });
   });
   it("Admin can get specific user transactions and filter by category", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const category = TransactionCategory.DEPOSIT;
     const userId = 1;
     const res = await server.inject({
@@ -101,6 +106,7 @@ describe("Testing admin access to protected routes.", () => {
     }
   });
   it("Admin can get a specific user balance", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const userId = 1;
     const res = await server.inject({
       method: "get",
@@ -114,6 +120,7 @@ describe("Testing admin access to protected routes.", () => {
     expect(json).to.include(["username", "balance"]);
   });
   it("Admin can create a new deposit transaction", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const payload: TransactionPayload = {
       category: TransactionCategory.DEPOSIT,
       amount: 5,
@@ -138,6 +145,7 @@ describe("Testing admin access to protected routes.", () => {
     });
   });
   it("Admin cannot block a user that is already blocked", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const blockedUserId = 22;
     const res = await server.inject({
       method: "patch",
@@ -159,6 +167,7 @@ describe("Testing admin access to protected routes.", () => {
     "Admin cannot set a bet status that is the same " +
       "as the current bet status.",
     async () => {
+      if (willFail) fail("Wrong user credentials, test automatically failed");
       const betId = 1;
       const betRes = await server.inject({
         method: "get",
@@ -187,6 +196,7 @@ describe("Testing admin access to protected routes.", () => {
     }
   );
   it("Admin can get all placed bets", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/placed-bets",
@@ -199,6 +209,7 @@ describe("Testing admin access to protected routes.", () => {
     expect(Array.isArray(json)).to.equal(true);
   });
   it("Admin can get placed bet using id", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const placedBetId = 1;
     const res = await server.inject({
       method: "get",
@@ -212,6 +223,7 @@ describe("Testing admin access to protected routes.", () => {
     expect(json).to.contain(["user_id", "bet_id", "bet_option", "amount"]);
   });
   it("Admin can get all options", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const res = await server.inject({
       method: "get",
       url: "/api/options",
@@ -224,6 +236,7 @@ describe("Testing admin access to protected routes.", () => {
     expect(json[0]).to.contain(["number", "name", "odd", "bets"]);
   });
   it("Admin cannot settle bet through change bet status route.", async () => {
+    if (willFail) fail("Wrong user credentials, test automatically failed");
     const betId = 1;
     const statusToAdd = "settled";
     const statusRes = await server.inject({
@@ -236,7 +249,6 @@ describe("Testing admin access to protected routes.", () => {
         status: statusToAdd,
       },
     });
-    const json = JSON.parse(statusRes.payload);
     expect(statusRes.statusCode).to.equal(400);
   });
 });
