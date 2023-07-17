@@ -1,4 +1,4 @@
-# GreenRun Backend Developer Test
+# PlayGreen Backend Developer Test
 
 REST API that implements a betting system and performs automatic payments for winning bets.
 
