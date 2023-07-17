@@ -1,3 +1,5 @@
+import Boom from "@hapi/boom";
+
 import { Bet } from "../entities/Bet";
 import { PlacedBet } from "../entities/PlacedBet";
 import { User } from "../entities/User";
@@ -8,16 +10,16 @@ import { TransactionCategory } from "../entities/Transaction";
 export const canSettleBet = async (
   bet: Bet,
   winningOption: string
-): Promise<[boolean, number]> => {
+): Promise<number> => {
   bet.options.forEach(async (option) => {
     if (option.name === winningOption) {
       option.did_win = true;
       await option.save();
-      return [true, option.odd];
+      return option.odd;
     }
   });
 
-  return [false, 0];
+  throw Boom.notFound("Winning option is not inside Bet.");
 };
 
 export const rewardUsers = async (
