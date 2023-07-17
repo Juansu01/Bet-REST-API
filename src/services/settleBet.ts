@@ -1,8 +1,10 @@
 import Boom from "@hapi/boom";
 
 import { Bet } from "../entities/Bet";
+import { BetStatus } from "../entities/Bet";
 import { PlacedBet } from "../entities/PlacedBet";
 import { User } from "../entities/User";
+import { Match } from "../entities/Match";
 import { RewardedUser } from "../types/placedBet";
 import { makeTransaction } from "./transactionService";
 import { TransactionCategory } from "../entities/Transaction";
@@ -50,4 +52,17 @@ export const rewardUsers = async (
   });
 
   return rewardedUsers;
+};
+
+export const settleBet = async (
+  betToSettle: Bet,
+  winningOption: string
+): Promise<void> => {
+  const matchFromBet = await Match.findOneBy({ id: betToSettle.match_id });
+
+  if (matchFromBet) matchFromBet.winner = winningOption;
+
+  betToSettle.result = winningOption;
+  betToSettle.status = BetStatus.SETTLED;
+  await betToSettle.save();
 };
