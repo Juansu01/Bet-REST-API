@@ -10,3 +10,8 @@ export interface PlacedBetPayload {
 export interface PlacedBetRequest extends Request {
   payload: PlacedBetPayload;
 }
+
+export interface RewardedUser {
+  email: string;
+  amount: number;
+}
