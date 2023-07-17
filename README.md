@@ -15,6 +15,11 @@ NPM version: 9.5.1
 3. Make sure redis-server is running
 4. Run `npm run dev`
 
+### How to test
+
+1. Make sure redis-server is running
+2. Run `npm test`
+
 ### Dependencies
 
 - TypeScript
