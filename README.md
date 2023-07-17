@@ -11,7 +11,9 @@ NPM version: 9.5.1
 ### How to set up
 
 1. Install packages: `npm install`
-2. Set required [environment variables](#environment-variables)
+2. Set required [environment variables](#environment-variables) in .env file
+3. Make sure redis-server is running
+4. Run `npm run dev`
 
 ### Dependencies
 
