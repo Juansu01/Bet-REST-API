@@ -8,6 +8,11 @@ import { User } from "../entities/User";
 import { makeTransaction } from "../services/transactionService";
 import { TransactionCategory } from "../entities/Transaction";
 import { Match } from "../entities/Match";
+import {
+  canSettleBet,
+  rewardUsers,
+  settleBet as setBetToSettled,
+} from "../services/settleBet";
 
 export const createNewBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { match_id, result } = request.payload;
@@ -63,64 +68,33 @@ export const changeBetStatus = async (
 
 export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
   const { id } = request.params;
-  const { winning_option } = request.payload;
+  const { winning_option: winningOption } = request.payload;
   const betToSettle = await Bet.findOne({
     where: { id: parseInt(id) },
     relations: { options: true },
   });
-  let canBeSettled = false;
-  let odd: number | null = null;
 
   if (!betToSettle) throw Boom.notFound("Bet was not found.");
 
   if (betToSettle.status === "settled")
     throw Boom.badRequest("Bet is already settled.");
 
-  betToSettle.options.forEach(async (option) => {
-    if (option.name === winning_option) {
-      canBeSettled = true;
-      option.did_win = true;
-      odd = option.odd;
-      await option.save();
-    }
-  });
-
-  if (!canBeSettled) throw Boom.notFound("Winning option is not inside Bet.");
+  const odd = await canSettleBet(betToSettle, winningOption);
 
   const winningPlacedBets = await PlacedBet.find({
-    where: { bet_option: winning_option, bet_id: betToSettle.id },
+    where: { bet_option: winningOption, bet_id: betToSettle.id },
   });
 
   if (!winningPlacedBets) {
     return h.response("There weren't any winning placed bets.");
   }
 
-  const winnersList: Object[] = [];
-  winningPlacedBets.forEach(async (placedBet) => {
-    const userToReward = await User.findOne({
-      where: { id: placedBet.user_id },
-    });
-    if (!userToReward) return;
-    const amountToAdd = +placedBet.amount * +odd!;
-    console.log(`${userToReward.email} will be rewarded for ${amountToAdd}!`);
-    await makeTransaction(
-      "winning" as TransactionCategory,
-      userToReward!,
-      amountToAdd
-    );
-    winnersList.push({
-      user_email: userToReward.email,
-      received_amount: amountToAdd,
-    });
-  });
-  const matchFromBet = await Match.findOneBy({ id: betToSettle.match_id });
-  if (matchFromBet) matchFromBet.winner = winning_option;
-  betToSettle.result = winning_option;
-  betToSettle.status = "settled";
-  await betToSettle.save();
+  const rewardedUsers = await rewardUsers(winningPlacedBets, odd);
+  await setBetToSettled(betToSettle, winningOption);
+
   return h.response({
     message: "Successfully settled.",
-    winners: winnersList,
+    winners: rewardedUsers,
   });
 };
 
