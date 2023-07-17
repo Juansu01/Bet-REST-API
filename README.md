@@ -12,6 +12,7 @@ REST API that implements a betting system and performs automatic payments for wi
 - Joi
 - Hapi JWT
 - Hapi Basic
+- Redis
 
 ## Deployment Details
 
