@@ -2,6 +2,16 @@
 
 REST API that implements a betting system and performs automatic payments for winning bets.
 
+### Requirements
+
+Node version: 18.12.1
+NPM version: 9.5.1
+
+### How to set up
+
+1. Install packages: `npm install`
+2. Set required [environment variables.](#environment-variables)
+
 ### Dependencies
 
 - TypeScript
@@ -13,6 +23,15 @@ REST API that implements a betting system and performs automatic payments for wi
 - Hapi JWT
 - Hapi Basic
 - Redis
+
+### Environment Variables
+
+- ACCESS_TOKEN_SECRET: Your secret for JWT generation
+- DB_HOST: DB host
+- DB_USERNAME: DB username
+- DB_PASSWORD: DB password
+- DATABASE: DB name
+- ENVIRONMENT: Environment type, example "development"
 
 ### Final DB Model
 
