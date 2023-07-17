@@ -5,12 +5,13 @@ REST API that implements a betting system and performs automatic payments for wi
 ### Requirements
 
 Node version: 18.12.1
+<br>
 NPM version: 9.5.1
 
 ### How to set up
 
 1. Install packages: `npm install`
-2. Set required [environment variables.](#environment-variables)
+2. Set required [environment variables](#environment-variables)
 
 ### Dependencies
 
