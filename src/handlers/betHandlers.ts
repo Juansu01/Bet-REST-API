@@ -4,10 +4,6 @@ import Boom from "@hapi/boom";
 import { BetRequest } from "../types/bet";
 import { Bet } from "../entities/Bet";
 import { PlacedBet } from "../entities/PlacedBet";
-import { User } from "../entities/User";
-import { makeTransaction } from "../services/transactionService";
-import { TransactionCategory } from "../entities/Transaction";
-import { Match } from "../entities/Match";
 import {
   canSettleBet,
   rewardUsers,
