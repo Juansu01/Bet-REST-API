@@ -13,7 +13,7 @@ export const makeTransaction = async (
     depositType === TransactionCategory.DEPOSIT ||
     depositType === TransactionCategory.WINNING
   ) {
-    user.balance = user.balance + amount;
+    user.balance = +user.balance + amount;
     await user.save();
   }
 
@@ -21,10 +21,10 @@ export const makeTransaction = async (
     depositType === TransactionCategory.WITHDRAW ||
     depositType === TransactionCategory.BET
   ) {
-    if (user.balance < amount)
+    if (+user.balance < amount)
       throw Boom.notAcceptable(`Cannot ${depositType}, balance is not enough.`);
 
-    user.balance = user.balance - amount;
+    user.balance = +user.balance - amount;
     await user.save();
   }
   const newTransaction = Transaction.create({
