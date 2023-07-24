@@ -13,13 +13,13 @@ export const canSettleBet = async (
   bet: Bet,
   winningOption: string
 ): Promise<number> => {
-  bet.options.forEach(async (option) => {
+  for (const option of bet.options) {
     if (option.name === winningOption) {
       option.did_win = true;
       await option.save();
       return option.odd;
     }
-  });
+  }
 
   throw Boom.notFound("Winning option is not inside Bet.");
 };
