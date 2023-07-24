@@ -72,8 +72,8 @@ export const settleBet = async (request: BetRequest, h: ResponseToolkit) => {
 
   if (!betToSettle) throw Boom.notFound("Bet was not found.");
 
-  if (betToSettle.status === "settled")
-    throw Boom.badRequest("Bet is already settled.");
+  if (betToSettle.status === "cancelled" || betToSettle.status === "settled")
+    throw Boom.badRequest(`Cannot place bet, bet is ${betToSettle.status}`);
 
   const odd = await canSettleBet(betToSettle, winningOption);
 
