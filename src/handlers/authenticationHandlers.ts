@@ -1,6 +1,6 @@
 import { ResponseToolkit, Request } from "hapi";
 import Boom from "@hapi/boom";
-import Jwt, { HapiJwt } from "@hapi/jwt";
+import Jwt from "@hapi/jwt";
 import dotenv from "dotenv";
 
 import { User } from "../entities/User";
