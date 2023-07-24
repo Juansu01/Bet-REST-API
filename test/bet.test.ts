@@ -101,7 +101,6 @@ describe("Testing bet route.", () => {
       },
     });
     const json = JSON.parse(statusRes.payload);
-    console.log(json);
     expect(statusRes.statusCode).to.equal(400);
     expect(json).to.contain({
       message: "Cannot settle bet, bet is cancelled",
