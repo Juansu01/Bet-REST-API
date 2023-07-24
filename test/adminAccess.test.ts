@@ -168,7 +168,7 @@ describe("Testing admin access to protected routes.", () => {
       "as the current bet status.",
     async () => {
       if (willFail) fail("Wrong user credentials, test automatically failed");
-      const betId = 1;
+      const betId = 5;
       const betRes = await server.inject({
         method: "get",
         url: `/api/bets/${betId}`,
