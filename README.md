@@ -1,4 +1,4 @@
-# PlayGreen Backend Developer Test
+# Betting Rest API
 
 REST API that implements a betting system and performs automatic payments for winning bets.
 
