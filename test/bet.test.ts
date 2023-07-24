@@ -106,4 +106,22 @@ describe("Testing bet route.", () => {
       message: "Cannot settle bet, bet is cancelled",
     });
   });
+  it("Users cannot settle bets.", async () => {
+    const betId = 1;
+    const statusRes = await server.inject({
+      method: "patch",
+      url: `/api/settle-bet/${betId}`,
+      headers: {
+        authorization: `Bearer ${userAccessToken}`,
+      },
+      payload: {
+        winning_option: "Random Option",
+      },
+    });
+    const json = JSON.parse(statusRes.payload);
+    expect(statusRes.statusCode).to.equal(401);
+    expect(json).to.contain({
+      message: "You are not an admin.",
+    });
+  });
 });
